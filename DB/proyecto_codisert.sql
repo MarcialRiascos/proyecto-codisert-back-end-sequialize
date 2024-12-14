@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-12-2024 a las 00:29:07
+-- Tiempo de generación: 14-12-2024 a las 02:12:10
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -100,7 +100,9 @@ INSERT INTO `beneficiario` (`idBeneficiario`, `Nombre`, `Apellido`, `TipoDocumen
 (16, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
 (17, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
 (18, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(19, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27');
+(19, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
+(33, 'Carlos', 'González', 1, '9876543210', '3007654321', '3102345678', 'carlos.gonzalez@example.com', '4', '2024-01-31 19:00:00', '2025-01-31 19:00:00', '11001', 'Cundinamarca', '11001', 'Bogotá', 'Calle 456 # 78-90', 'Centro', 'Oficina 301', 1, 4, 1, '2024-12-13 22:58:36', '2024-12-13 23:23:52'),
+(34, 'Andrés', 'Ramírez', 2, '456789123', '3145678901', '3186547890', 'andres.ramirez@example.com', '5', '2024-02-29 19:00:00', '2026-02-28 19:00:00', '25001', 'Antioquia', '25001', 'Medellín', 'Carrera 50 # 35-40', 'El Poblado', 'Oficina 501', 2, 5, 4, '2024-12-13 23:02:23', '2024-12-13 23:32:41');
 
 -- --------------------------------------------------------
 
@@ -129,10 +131,7 @@ INSERT INTO `documentos` (`idDocumentos`, `NombreDocumento`, `TipoDocumento`, `U
 (3, 'Cedula', 'PDF', 'uploads\\1733870912432-456415893.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
 (4, 'Cedula', 'PDF', 'uploads\\1733871106603-266543819.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
 (5, 'Cedula', 'PDF', 'uploads\\1733872193293-147109169.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(6, 'Cedula', 'PDF', 'uploads\\1733872291954-193520338.pdf', 14, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(13, 'Cedula', 'PDF', 'uploads\\1734035917188-640804863.pdf', 13, 8, '2024-12-12 20:38:37', '2024-12-12 20:38:37'),
-(15, 'Cedula', 'PDF', 'uploads\\1734038165099-989858453.pdf', 13, 1, '2024-12-12 21:16:05', '2024-12-12 21:16:05'),
-(16, 'Cedula', 'PDF', 'uploads\\1734038716742-201205924.pdf', 13, 4, '2024-12-12 21:25:16', '2024-12-12 21:25:16');
+(6, 'Cedula', 'PDF', 'uploads\\1733872291954-193520338.pdf', 14, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37');
 
 -- --------------------------------------------------------
 
@@ -181,17 +180,40 @@ INSERT INTO `estrato` (`idEstrato`, `Estrato`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `historialcambios`
+-- Estructura de tabla para la tabla `historialcambio`
 --
 
-CREATE TABLE `historialcambios` (
-  `idHistorialCambios` int(10) UNSIGNED NOT NULL,
+CREATE TABLE `historialcambio` (
+  `idHistorialCambio` int(10) UNSIGNED NOT NULL,
   `Accion` varchar(45) NOT NULL,
   `ValorAnterior` varchar(45) NOT NULL,
   `ValorNuevo` varchar(45) DEFAULT NULL,
-  `Administrador_idAdministrador` int(10) UNSIGNED DEFAULT NULL,
-  `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL
+  `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
+  `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historialcambio`
+--
+
+INSERT INTO `historialcambio` (`idHistorialCambio`, `Accion`, `ValorAnterior`, `ValorNuevo`, `Administrador_idAdministrador`, `Beneficiario_idBeneficiario`, `createdAt`, `updatedAt`) VALUES
+(5, 'Creación', 'N/A', '{\"idBeneficiario\":32,\"Nombre\":\"María\",\"Apelli', 1, 32, '2024-12-13 21:43:19', '2024-12-13 21:43:19'),
+(6, 'Creación', 'N/A', '{\"idBeneficiario\":33,\"Nombre\":\"Laura\",\"Apelli', 1, 33, '2024-12-13 17:58:36', '2024-12-13 17:58:36'),
+(7, 'Creación', 'N/A', '{\"idBeneficiario\":34,\"Nombre\":\"Laura1\",\"Apell', 4, 34, '2024-12-13 18:02:23', '2024-12-13 18:02:23'),
+(8, 'Actualización', '{\"idBeneficiario\":33,\"Nombre\":\"Laura\",\"Apelli', '{\"idBeneficiario\":33,\"Nombre\":\"Carlos\",\"Apell', 4, 33, '2024-12-13 18:23:52', '2024-12-13 18:23:52'),
+(9, 'Actualización', '{\"idBeneficiario\":34,\"Nombre\":\"Laura1\",\"Apell', '{\"idBeneficiario\":34,\"Nombre\":\"Andrés\",\"Apell', 1, 34, '2024-12-13 18:32:41', '2024-12-13 18:32:41'),
+(10, 'Eliminación', '{\"idBeneficiario\":32,\"Nombre\":\"María\",\"Apelli', 'N/A', 1, 32, '2024-12-13 19:13:35', '2024-12-13 19:13:35'),
+(11, 'Eliminación', '{\"idBeneficiario\":29,\"Nombre\":\"Carlos\",\"Apell', 'N/A', 4, 29, '2024-12-13 19:15:42', '2024-12-13 19:15:42'),
+(12, 'Creación', 'N/A', '{\"idDocumentos\":19,\"NombreDocumento\":\"Cedula\"', 4, 33, '2024-12-13 19:51:30', '2024-12-13 19:51:30'),
+(13, 'Creación', 'N/A', '{\"idDocumentos\":20,\"NombreDocumento\":\"Cedula\"', 1, 19, '2024-12-13 19:53:11', '2024-12-13 19:53:11'),
+(14, 'Eliminación', '{\"idDocumentos\":13,\"NombreDocumento\":\"Cedula\"', 'N/A', 4, 13, '2024-12-13 20:04:24', '2024-12-13 20:04:24'),
+(15, 'Eliminación', '{\"idDocumentos\":20,\"NombreDocumento\":\"Cedula\"', 'N/A', 4, 19, '2024-12-13 20:05:00', '2024-12-13 20:05:00'),
+(16, 'Eliminación', '{\"idDocumentos\":19,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 33, '2024-12-13 20:05:37', '2024-12-13 20:05:37'),
+(17, 'Eliminación', '{\"idDocumentos\":18,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 34, '2024-12-13 20:06:29', '2024-12-13 20:06:29'),
+(18, 'Eliminación', '{\"idDocumentos\":16,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 13, '2024-12-13 20:06:33', '2024-12-13 20:06:33'),
+(19, 'Eliminación', '{\"idDocumentos\":15,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 13, '2024-12-13 20:07:12', '2024-12-13 20:07:12');
 
 -- --------------------------------------------------------
 
@@ -278,12 +300,10 @@ ALTER TABLE `estrato`
   ADD PRIMARY KEY (`idEstrato`);
 
 --
--- Indices de la tabla `historialcambios`
+-- Indices de la tabla `historialcambio`
 --
-ALTER TABLE `historialcambios`
-  ADD PRIMARY KEY (`idHistorialCambios`),
-  ADD KEY `fk_HistorialCambios_Administrador1_idx` (`Administrador_idAdministrador`),
-  ADD KEY `fk_HistorialCambios_Beneficiario1_idx` (`Beneficiario_idBeneficiario`);
+ALTER TABLE `historialcambio`
+  ADD PRIMARY KEY (`idHistorialCambio`);
 
 --
 -- Indices de la tabla `rol`
@@ -305,19 +325,19 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiario`
 --
 ALTER TABLE `beneficiario`
-  MODIFY `idBeneficiario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `idBeneficiario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `idDocumentos` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `idDocumentos` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -332,10 +352,10 @@ ALTER TABLE `estrato`
   MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla `historialcambios`
+-- AUTO_INCREMENT de la tabla `historialcambio`
 --
-ALTER TABLE `historialcambios`
-  MODIFY `idHistorialCambios` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+ALTER TABLE `historialcambio`
+  MODIFY `idHistorialCambio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -376,13 +396,6 @@ ALTER TABLE `beneficiario`
 ALTER TABLE `documentos`
   ADD CONSTRAINT `fk_Dcumentos_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Detalle_Persona1` FOREIGN KEY (`Beneficiario_idBeneficiario`) REFERENCES `beneficiario` (`idBeneficiario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `historialcambios`
---
-ALTER TABLE `historialcambios`
-  ADD CONSTRAINT `fk_HistorialCambios_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_HistorialCambios_Beneficiario1` FOREIGN KEY (`Beneficiario_idBeneficiario`) REFERENCES `beneficiario` (`idBeneficiario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

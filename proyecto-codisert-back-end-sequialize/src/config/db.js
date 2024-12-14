@@ -10,7 +10,11 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     dialect: 'mysql',
-    logging: false,  // Puedes habilitarlo para ver las consultas SQL
+    logging: false,
+    timezone: '-05:00', // Configura la zona horaria a UTC-5
+    dialectOptions: {
+      timezone: '-05:00', // Asegura que Sequelize envíe la zona horaria correcta al servidor
+    },
     pool: {
       max: 5,
       min: 0,
@@ -21,3 +25,4 @@ const sequelize = new Sequelize(
 );
 
 module.exports = sequelize;
+

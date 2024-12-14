@@ -3,10 +3,9 @@ const authMiddleware = require('../middleware/authMiddleware');
 const authAdminMiddleware = require('../middleware/authAdminMiddleware');
 const authAdminRegisMiddleware = require('../middleware/authAdminRegisMiddleware');
 const authAdminRegisLectMiddleware = require('../middleware/authAdminRegisLectMiddleware');
-const beneficiaryMiddleware = require('../middleware/beneficiarMiddleware');
-const genericMiddleware = require('../middleware/genericMiddleware');
 const UserController = require('../controllers/registerAdminController');
 const UsarController = require('../controllers/registerBeneficiaryController');
+const historialCambioController = require('../controllers/historialCambioController');
 const router = express.Router();
 
 
@@ -33,5 +32,14 @@ router.get('/beneficiary/all', authAdminRegisLectMiddleware, UsarController.getA
 router.get('/beneficiary/all/:id', authAdminRegisLectMiddleware, UsarController.getBeneficiaryById);
 router.put('/beneficiary/:id', authAdminRegisMiddleware, UsarController.updateBeneficiary);
 router.delete('/manage/beneficiary/:id', authAdminRegisMiddleware, UsarController.deleteBeneficiary);
+
+router.get('/historialcambio', authAdminRegisLectMiddleware, historialCambioController.getAllHistorialCambios);
+router.get('/historialcambios/:id', authAdminRegisLectMiddleware, historialCambioController.getHistorialCambioById);
+router.delete('/historialcambio/:id', authAdminRegisMiddleware, historialCambioController.deleteHistorialCambio);
+router.delete('/delhistorialcambio', authAdminRegisMiddleware, historialCambioController.deleteAllHistorialCambio);
+
+
+
+
 
 module.exports = router;

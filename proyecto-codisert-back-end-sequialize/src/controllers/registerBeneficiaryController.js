@@ -1,10 +1,10 @@
 const { Op } = require('sequelize');  // Importamos Op de Sequelize
 const { Beneficiario } = require('../models/Beneficiario'); // Importamos el modelo Sequelize
-
+const { HistorialCambio } = require('../models/HistorialCambio');  // Importa el modelo para historial de cambios
 
 const registerBeneficiaryController = {
   // Registrar un beneficiario
-   async registerBeneficiary(req, res) {
+  async registerBeneficiary(req, res) {
     const {
       Nombre,
       Apellido,
@@ -72,6 +72,15 @@ const registerBeneficiaryController = {
         Estado_idEstado,
         Estrato_idEstrato,
         Administrador_idAdministrador: idAdministrador,
+      });
+
+      // Registrar el cambio en HistorialCambio
+      await HistorialCambio.create({
+        Accion: 'Creación',
+        ValorAnterior: 'N/A',
+        ValorNuevo: JSON.stringify(newBeneficiary),
+        Administrador_idAdministrador: idAdministrador,
+        Beneficiario_idBeneficiario: newBeneficiary.idBeneficiario,
       });
 
       // Aseguramos que el beneficiario se ha creado correctamente y enviamos una respuesta exitosa
@@ -214,6 +223,9 @@ const registerBeneficiaryController = {
         });
       }
 
+      // Registrar los cambios en el HistorialCambio
+      const previousData = JSON.stringify(existingBeneficiary);
+      
       // Actualizar los datos del beneficiario
       await existingBeneficiary.update({
         Nombre: Nombre || existingBeneficiary.Nombre,
@@ -237,6 +249,15 @@ const registerBeneficiaryController = {
         Estrato_idEstrato: Estrato_idEstrato || existingBeneficiary.Estrato_idEstrato,
       });
 
+      // Registrar el cambio en HistorialCambio
+      await HistorialCambio.create({
+        Accion: 'Actualización',
+        ValorAnterior: previousData,
+        ValorNuevo: JSON.stringify(existingBeneficiary),
+        Administrador_idAdministrador: req.user.id,
+        Beneficiario_idBeneficiario: existingBeneficiary.idBeneficiario,
+      });
+
       res.status(200).json({ message: 'Beneficiario actualizado exitosamente' });
     } catch (err) {
       console.error('Error al actualizar el beneficiario:', err);
@@ -245,7 +266,7 @@ const registerBeneficiaryController = {
         error: err.message,
       });
     }
-},
+  },
 
   // Eliminar un beneficiario
   async deleteBeneficiary(req, res) {
@@ -258,6 +279,15 @@ const registerBeneficiaryController = {
       if (!existingBeneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
+
+      // Registrar el cambio en HistorialCambio antes de eliminar
+      await HistorialCambio.create({
+        Accion: 'Eliminación',
+        ValorAnterior: JSON.stringify(existingBeneficiary),
+        ValorNuevo: 'N/A',
+        Administrador_idAdministrador: req.user.id,
+        Beneficiario_idBeneficiario: existingBeneficiary.idBeneficiario,
+      });
 
       // Eliminar el beneficiario
       await existingBeneficiary.destroy();
