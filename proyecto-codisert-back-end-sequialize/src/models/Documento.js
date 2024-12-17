@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Aquí asumo que tienes tu instancia de sequelize configurada
+const { Beneficiario } = require('../models/Beneficiario');
+const Administrador = require('./Administrador');
 
 const Documento = sequelize.define('Documento', {
   idDocumentos: {
@@ -29,7 +31,19 @@ const Documento = sequelize.define('Documento', {
   },
 }, {
   tableName: 'documentos',
-  timestamps: false, // Si no usas campos de timestamps, ponlo como false
+  timestamps: true, // Si no usas campos de timestamps, ponlo como false
+});
+
+Documento.belongsTo(Beneficiario, {
+  foreignKey: 'Beneficiario_idBeneficiario',  // Clave foránea en Documento
+  targetKey: 'idBeneficiario',  // Clave primaria en Beneficiario
+  as: 'beneficiario',  // Alias para la relación
+});
+
+Documento.belongsTo(Administrador, {
+  foreignKey: 'Administrador_idAdministrador',  // Clave foránea en Documento
+  targetKey: 'idAdministrador',  // Clave primaria en Beneficiario
+  as: 'administrador',  // Alias para la relación
 });
 
 module.exports = Documento;

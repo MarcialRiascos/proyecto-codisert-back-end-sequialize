@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
-const Role = require('./Role'); // Modelo de Rol
-const Estado = require('./Estado'); // Modelo de Estado
+const Role = require('./Role');
+const Estado = require('./Estado');
+const TipoDocumento = require('./TipoDocumento'); // Importar el modelo TipoDocumento
 
 const Administrador = sequelize.define('Administrador', {
   idAdministrador: {
@@ -52,11 +53,20 @@ const Administrador = sequelize.define('Administrador', {
   },
 }, {
   tableName: 'administrador',
-  timestamps: true, // Si usas campos de fecha como `FechaCreacion` y `FechaModificacion`
+  timestamps: true,
 });
 
-// Relación con Role y Estado
+// Relaciones
 Administrador.belongsTo(Role, { foreignKey: 'Rol_idRol' });
 Administrador.belongsTo(Estado, { foreignKey: 'Estado_idEstado' });
+Administrador.belongsTo(TipoDocumento, { foreignKey: 'TipoDocumento_idTipoDocumento' }); // Relación con TipoDocumento
+Administrador.belongsTo(Administrador, {
+  as: 'AdministradorCreado', // Alias para diferenciar la relación
+  foreignKey: 'Administrador_idAdministrador' // Campo de la clave foránea
+});
 
+Administrador.associate = (models) => {
+  // Relación con el modelo de Rol
+  Administrador.belongsTo(models.Role, { foreignKey: 'Rol_idRol' });
+};
 module.exports = Administrador;

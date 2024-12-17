@@ -13,7 +13,7 @@ const Estado = sequelize.define('Estado', {
   },
 }, {
   tableName: 'estado',
-  timestamps: false,
+  timestamps: true,
 });
 
 module.exports = Estado;

@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/Administrador');
 const Role = require('../models/Role'); // Asumiendo que tienes un modelo de Role
 
 const authController = {
@@ -32,9 +32,9 @@ const authController = {
       );
 
       // Enviar respuesta al frontend
-      res.status(200).json({ 
-        message: 'Inicio de sesión exitoso', 
-        token, 
+      res.status(200).json({
+        message: 'Inicio de sesión exitoso',
+        token,
         role: role.Rol,
         user: { id: user.idAdministrador, name: user.Nombre, email: user.Correo },
       });

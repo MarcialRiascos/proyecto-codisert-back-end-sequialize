@@ -3,32 +3,33 @@ const { Op } = require('sequelize');
 const Administrador = require('../models/Administrador'); // Modelo de Administrador
 const Role = require('../models/Role'); // Modelo de Role
 const Estado = require('../models/Estado'); // Modelo de Estado
+const TipoDocumento = require('../models/TipoDocumento'); // Modelo de Estado
 
 const registerAdminController = {
   async registerAdmin(req, res) {
-    const { 
-      Nombre, 
-      Apellido, 
-      TipoDocumento_idTipoDocumento, 
-      NumeroDocumento, 
-      Telefono, 
-      Correo, 
-      Password, 
-      Estado_idEstado, 
-      Rol_idRol 
+    const {
+      Nombre,
+      Apellido,
+      TipoDocumento_idTipoDocumento,
+      NumeroDocumento,
+      Telefono,
+      Correo,
+      Password,
+      Estado_idEstado,
+      Rol_idRol
     } = req.body;
-  
+
     const idAdministrador = req.user.id; // ID del usuario con sesión activa
-  
+
     // Validar datos de entrada
     if (!Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento || !Correo || !Password || !Estado_idEstado || !Rol_idRol) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
-  
+
     try {
       // Encriptar la contraseña
       const hashedPassword = await bcrypt.hash(Password, 10);
-  
+
       // Crear el nuevo administrador usando Sequelize
       const newAdmin = await Administrador.create({
         Nombre,
@@ -42,7 +43,7 @@ const registerAdminController = {
         Rol_idRol,
         Administrador_idAdministrador: idAdministrador,
       });
-  
+
       res.status(201).json({
         message: 'Administrador registrado exitosamente',
         newAdminId: newAdmin.idAdministrador, // ID del nuevo administrador insertado
@@ -55,7 +56,7 @@ const registerAdminController = {
           error: err.message,
         });
       }
-  
+
       console.error(err);
       res.status(500).json({ message: 'Error al registrar el administrador', error: err.message });
     }
@@ -74,15 +75,15 @@ const registerAdminController = {
       Estado_idEstado,
       Rol_idRol,
     } = req.body;
-  
+
     try {
       // Verificar si el administrador existe
       const existingAdmin = await Administrador.findByPk(id);
-  
+
       if (!existingAdmin) {
         return res.status(404).json({ message: 'Administrador no encontrado' });
       }
-  
+
       // Verificar si el NumeroDocumento ya está registrado con otro administrador
       const duplicateAdmin = await Administrador.findOne({
         where: {
@@ -90,19 +91,19 @@ const registerAdminController = {
           idAdministrador: { [Op.ne]: id }, // Excluir al administrador actual
         },
       });
-  
+
       if (duplicateAdmin) {
         return res.status(400).json({
           message: 'El Número de Documento ya está registrado con otro administrador.',
         });
       }
-  
+
       // Encriptar la contraseña si se proporciona
       let hashedPassword = null;
       if (Password) {
         hashedPassword = await bcrypt.hash(Password, 10);
       }
-  
+
       // Actualizar los datos del administrador
       await existingAdmin.update({
         Nombre: Nombre || existingAdmin.Nombre,
@@ -115,7 +116,7 @@ const registerAdminController = {
         Estado_idEstado: Estado_idEstado || existingAdmin.Estado_idEstado,
         Rol_idRol: Rol_idRol || existingAdmin.Rol_idRol,
       });
-  
+
       res.status(200).json({ message: 'Administrador actualizado exitosamente' });
     } catch (err) {
       console.error('Error al actualizar el administrador:', err);
@@ -128,7 +129,7 @@ const registerAdminController = {
 
   async deleteAdmin(req, res) {
     const { id } = req.params; // ID del administrador a eliminar
-  
+
     try {
       // Verificar que el usuario tiene rol admin_super
       if (req.user.role !== 'admin_super') {
@@ -157,7 +158,26 @@ const registerAdminController = {
   async getAllAdmins(req, res) {
     try {
       const admins = await Administrador.findAll({
-        include: [Role, Estado], // Incluir los modelos de Rol y Estado
+        include: [
+          {
+            model: Role, // Incluir el modelo Role
+            attributes: ['Rol'], // Solo incluir el campo 'Rol' de Role
+          },
+          {
+            model: Estado, // Incluir el modelo Estado
+            attributes: ['Estado'], // Solo incluir el campo 'Estado' de Estado
+          },
+          {
+            model: TipoDocumento, // Incluir el modelo TipoDocumento
+            attributes: ['TipoDocumento'], // Traer el valor de 'TipoDocumento'
+          },
+          {
+            model: Administrador, // Incluir el administrador que creó/modificó
+            as: 'AdministradorCreado', // Alias usado en la relación auto-referenciada
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Solo los campos necesarios del administrador
+            required: false // Asegurarse de que la relación sea opcional
+          }
+        ],
       });
 
       res.status(200).json({
@@ -175,18 +195,31 @@ const registerAdminController = {
 
   async getAdminById(req, res) {
     const { id } = req.params; // Obtener el ID del administrador de los parámetros
-  
+
     try {
       // Buscar el administrador por ID
       const admin = await Administrador.findByPk(id, {
-        include: [Role, Estado], // Incluir los modelos de Role y Estado si es necesario
+        include: [
+          Role, // Incluir el modelo Role
+          Estado, // Incluir el modelo Estado
+          {
+            model: TipoDocumento, // Incluir el modelo TipoDocumento
+            attributes: ['TipoDocumento'], // Traer solo el valor de 'TipoDocumento'
+          },
+          {
+            model: Administrador, // Incluir el administrador que lo creó/modificó
+            as: 'AdministradorCreado', // Alias para la relación auto-referenciada
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Campos que quieres obtener del administrador
+            required: false, // Relación opcional, no excluye los administradores sin relación
+          }
+        ],
       });
-  
+
       // Verificar si el administrador existe
       if (!admin) {
         return res.status(404).json({ message: 'Administrador no encontrado' });
       }
-  
+
       res.status(200).json({
         message: 'Administrador encontrado exitosamente',
         admin,

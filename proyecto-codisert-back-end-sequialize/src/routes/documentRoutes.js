@@ -1,6 +1,6 @@
 const express = require('express');
 const { uploadDocument } = require('../controllers/documentController');
-const  UsarController  = require('../controllers/documentController');
+const UsarController = require('../controllers/documentController');
 const upload = require('../middleware/uploadMiddleware'); // Middleware para cargar archivos
 const authAdminRegisMiddleware = require('../middleware/authAdminRegisMiddleware'); // Middleware para cargar archivos
 const authAdminRegisLectMiddleware = require('../middleware/authAdminRegisLectMiddleware');

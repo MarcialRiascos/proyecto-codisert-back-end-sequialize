@@ -1,5 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Asegúrate de que esté apuntando a tu archivo de configuración de Sequelize
+const Estado = require('../models/Estado');
+const Estrato = require('../models/Estrato');
+const TipoDocumento = require('../models/TipoDocumento');
+const Administrador = require('../models/Administrador');
 
 const Beneficiario = sequelize.define('Beneficiario', {
   idBeneficiario: {  // Definimos la clave primaria como 'idBeneficiario'
@@ -34,10 +38,6 @@ const Beneficiario = sequelize.define('Beneficiario', {
   },
   Correo: {
     type: DataTypes.STRING,
-    allowNull: true,
-  },
-  Estrato: {
-    type: DataTypes.INTEGER,
     allowNull: true,
   },
   FechaInicio: {
@@ -89,37 +89,36 @@ const Beneficiario = sequelize.define('Beneficiario', {
     allowNull: false,
   },
 }, {
-  tableName: 'beneficiario', 
+  tableName: 'beneficiario',
   timestamps: true, // Esto habilita `createdAt` y `updatedAt` automáticamente
 });
 
 // Definimos las asociaciones, si es necesario
 
 // Relación con TipoDocumento (si existe)
-Beneficiario.associate = (models) => {
-  // Aquí suponemos que tienes un modelo de TipoDocumento
-  Beneficiario.belongsTo(models.TipoDocumento, {
-    foreignKey: 'TipoDocumento_idTipoDocumento', // Asegúrate de que este sea el campo correcto
-    as: 'TipoDocumento', // Alias para acceder a la relación
-  });
 
-  // Relación con Estado (si tienes un modelo de Estado)
-  Beneficiario.belongsTo(models.Estado, {
-    foreignKey: 'Estado_idEstado',
-    as: 'Estado',
-  });
+Beneficiario.belongsTo(Estado, {
+  foreignKey: 'Estado_idEstado', // El nombre de la columna en el modelo Beneficiario
+  targetKey: 'idEstado',         // El nombre de la clave primaria en el modelo Estado
+  as: 'estado'                   // Alias para la relación (usado en el include)
+});
 
-  // Relación con Estrato (si tienes un modelo de Estrato)
-  Beneficiario.belongsTo(models.Estrato, {
-    foreignKey: 'Estrato_idEstrato',
-    as: 'Estrato',
-  });
+Beneficiario.belongsTo(Estrato, {
+  foreignKey: 'Estrato_idEstrato',
+  targetKey: 'idEstrato',
+  as: 'estrato', // Alias para la relación con Estrato
+});
 
-  // Relación con Administrador (si tienes un modelo de Administrador)
-  Beneficiario.belongsTo(models.Administrador, {
-    foreignKey: 'Administrador_idAdministrador',
-    as: 'Administrador',
-  });
-};
+Beneficiario.belongsTo(TipoDocumento, {
+  foreignKey: 'TipoDocumento_idTipoDocumento',
+  targetKey: 'idTipoDocumento',
+  as: 'tipoDocumento', // Alias para la relación con Estrato
+});
+
+Beneficiario.belongsTo(Administrador, {
+  foreignKey: 'Administrador_idAdministrador',
+  targetKey: 'idAdministrador',
+  as: 'administrador', // Alias para la relación con Estrato
+});
 
 module.exports = { Beneficiario };

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-12-2024 a las 02:12:10
+-- Tiempo de generación: 17-12-2024 a las 20:48:22
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -43,21 +43,6 @@ CREATE TABLE `administrador` (
   `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `administrador`
---
-
-INSERT INTO `administrador` (`idAdministrador`, `Nombre`, `Apellido`, `TipoDocumento_idTipoDocumento`, `NumeroDocumento`, `Telefono`, `Correo`, `Password`, `Estado_idEstado`, `Rol_idRol`, `Administrador_idAdministrador`, `createdAt`, `updatedAt`) VALUES
-(1, 'Super', 'Admin', 1, '1', '1111111111', 'admin@admin.com', '$2b$10$ZnRWbhXJ8BBrtY7Lm46mbu3uizHJPRdM5pQm6r8hWEtu0ITSOrOJC', 1, 1, NULL, '2024-12-11 01:27:55', '2024-12-12 13:29:16'),
-(4, 'Registrador', 'Admin', 1, '2', '2222222222', 'adminr@adminr.com', '$2b$10$ZnRWbhXJ8BBrtY7Lm46mbu3uizHJPRdM5pQm6r8hWEtu0ITSOrOJC', 1, 2, 1, '2024-12-11 01:27:55', '2024-12-12 16:16:54'),
-(8, 'Juan', 'Pérez', 1, '3', '987654321', 'juan.perez@correo.com', '$2b$10$w2KLbTgPdtW8j1PYZmGG6u050i2/2HJYHobR0FiUZnV5LH13rAhVK', 1, 3, 1, '2024-12-11 01:27:55', '2024-12-12 16:51:52'),
-(9, 'Cristian', 'Castro', 1, '10', '987654321', 'cristian@correo.com', '$2b$10$gZItk./6Xp7eVCCQS5Hv2.z018h3EUd6senLsFN9bq/OTtoKTJt1.', 1, 1, 1, '2024-12-11 01:27:55', '2024-12-11 01:27:55'),
-(10, 'Camilo', 'jurado', 1, '11', '987654321', 'camilo@correo.com', '$2b$10$ZnRWbhXJ8BBrtY7Lm46mbu3uizHJPRdM5pQm6r8hWEtu0ITSOrOJC', 1, 1, 1, '2024-12-11 01:27:55', '2024-12-11 01:27:55'),
-(11, 'Daniel', 'prado', 1, '12', '987654321', 'daniel@correo.com', '$2b$10$ZnRWbhXJ8BBrtY7Lm46mbu3uizHJPRdM5pQm6r8hWEtu0ITSOrOJC', 1, 1, 9, '2024-12-11 01:27:55', '2024-12-11 01:41:32'),
-(12, 'Daniela', 'palma', 1, '13', '987654321', 'daniela@correo.com', '$2b$10$VmxrOQIWakO1kfBwOaUQpucWqG/1xNIuziHdAhFRvaAf51HN37khm', 2, 1, 11, '2024-12-11 01:27:55', '2024-12-11 01:27:55'),
-(18, 'Junior', 'Riascos', 3, '15', '1878', 'junior@correo.com', '$2b$10$wnuFCZshimOxsRS415oPyO8xWdzRq.koi2CA9ptjPNEyZ4iS5lhye', 1, 2, 11, '2024-12-11 01:27:55', '2024-12-11 01:27:55'),
-(21, 'NuevoNombre', 'NuevoApellido', 1, '101', '2', '2@correo.com', '$2b$10$PVyhjOSiW5DQjaccCMy7Su6ydt/xoKUr1xZOxt/c6GcXappZlkpbC', 1, 2, 11, '2024-12-11 01:27:55', '2024-12-11 01:27:55');
-
 -- --------------------------------------------------------
 
 --
@@ -73,7 +58,6 @@ CREATE TABLE `beneficiario` (
   `Telefono` varchar(45) DEFAULT NULL,
   `Celular` varchar(45) DEFAULT NULL,
   `Correo` varchar(45) NOT NULL,
-  `Estrato` varchar(45) NOT NULL,
   `FechaInicio` varchar(45) NOT NULL,
   `FechaFin` varchar(45) DEFAULT NULL,
   `CodigoDaneDpmto` varchar(45) NOT NULL,
@@ -89,20 +73,6 @@ CREATE TABLE `beneficiario` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `beneficiario`
---
-
-INSERT INTO `beneficiario` (`idBeneficiario`, `Nombre`, `Apellido`, `TipoDocumento_idTipoDocumento`, `NumeroDocumento`, `Telefono`, `Celular`, `Correo`, `Estrato`, `FechaInicio`, `FechaFin`, `CodigoDaneDpmto`, `Departamento`, `CodigoDaneMunicipio`, `Municipio`, `Direccion`, `Barrio`, `Anexo`, `Estado_idEstado`, `Estrato_idEstrato`, `Administrador_idAdministrador`, `createdAt`, `updatedAt`) VALUES
-(13, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 1, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(14, 'Juan', 'Pérez', 1, '1234567890', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 1, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(16, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(17, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(18, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(19, 'Juan', 'Pérez', 1, '123456789', '123456789', '987654321', 'juan.perez@example.com', '3', '2024-01-01', '2024-12-31', '123', 'Antioquia', '456', 'Medellín', 'Calle 123', 'El Poblado', 'Anexo 1', 2, 2, 11, '2024-12-11 07:17:27', '2024-12-11 07:17:27'),
-(33, 'Carlos', 'González', 1, '9876543210', '3007654321', '3102345678', 'carlos.gonzalez@example.com', '4', '2024-01-31 19:00:00', '2025-01-31 19:00:00', '11001', 'Cundinamarca', '11001', 'Bogotá', 'Calle 456 # 78-90', 'Centro', 'Oficina 301', 1, 4, 1, '2024-12-13 22:58:36', '2024-12-13 23:23:52'),
-(34, 'Andrés', 'Ramírez', 2, '456789123', '3145678901', '3186547890', 'andres.ramirez@example.com', '5', '2024-02-29 19:00:00', '2026-02-28 19:00:00', '25001', 'Antioquia', '25001', 'Medellín', 'Carrera 50 # 35-40', 'El Poblado', 'Oficina 501', 2, 5, 4, '2024-12-13 23:02:23', '2024-12-13 23:32:41');
 
 -- --------------------------------------------------------
 
@@ -121,18 +91,6 @@ CREATE TABLE `documentos` (
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `documentos`
---
-
-INSERT INTO `documentos` (`idDocumentos`, `NombreDocumento`, `TipoDocumento`, `Url`, `Beneficiario_idBeneficiario`, `Administrador_idAdministrador`, `createdAt`, `updatedAt`) VALUES
-(1, 'Cedula', 'PDF', 'uploads\\1733858914949-852023543.jpeg', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(2, 'Cedula', 'PDF', 'uploads\\1733870336535-678046882.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(3, 'Cedula', 'PDF', 'uploads\\1733870912432-456415893.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(4, 'Cedula', 'PDF', 'uploads\\1733871106603-266543819.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(5, 'Cedula', 'PDF', 'uploads\\1733872193293-147109169.pdf', 13, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37'),
-(6, 'Cedula', 'PDF', 'uploads\\1733872291954-193520338.pdf', 14, 11, '2024-12-12 19:10:37', '2024-12-12 19:10:37');
-
 -- --------------------------------------------------------
 
 --
@@ -141,18 +99,10 @@ INSERT INTO `documentos` (`idDocumentos`, `NombreDocumento`, `TipoDocumento`, `U
 
 CREATE TABLE `estado` (
   `idEstado` int(10) UNSIGNED NOT NULL,
-  `Estado` varchar(45) NOT NULL
+  `Estado` varchar(45) NOT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `estado`
---
-
-INSERT INTO `estado` (`idEstado`, `Estado`) VALUES
-(1, 'Activo'),
-(2, 'Inactivo '),
-(3, 'Operativo'),
-(4, 'Suspendido');
 
 -- --------------------------------------------------------
 
@@ -162,20 +112,10 @@ INSERT INTO `estado` (`idEstado`, `Estado`) VALUES
 
 CREATE TABLE `estrato` (
   `idEstrato` int(10) UNSIGNED NOT NULL,
-  `Estrato` varchar(45) NOT NULL
+  `Estrato` varchar(45) NOT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `estrato`
---
-
-INSERT INTO `estrato` (`idEstrato`, `Estrato`) VALUES
-(1, '1'),
-(2, '2'),
-(3, '3'),
-(4, '4'),
-(5, '5'),
-(6, '6');
 
 -- --------------------------------------------------------
 
@@ -194,27 +134,6 @@ CREATE TABLE `historialcambio` (
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `historialcambio`
---
-
-INSERT INTO `historialcambio` (`idHistorialCambio`, `Accion`, `ValorAnterior`, `ValorNuevo`, `Administrador_idAdministrador`, `Beneficiario_idBeneficiario`, `createdAt`, `updatedAt`) VALUES
-(5, 'Creación', 'N/A', '{\"idBeneficiario\":32,\"Nombre\":\"María\",\"Apelli', 1, 32, '2024-12-13 21:43:19', '2024-12-13 21:43:19'),
-(6, 'Creación', 'N/A', '{\"idBeneficiario\":33,\"Nombre\":\"Laura\",\"Apelli', 1, 33, '2024-12-13 17:58:36', '2024-12-13 17:58:36'),
-(7, 'Creación', 'N/A', '{\"idBeneficiario\":34,\"Nombre\":\"Laura1\",\"Apell', 4, 34, '2024-12-13 18:02:23', '2024-12-13 18:02:23'),
-(8, 'Actualización', '{\"idBeneficiario\":33,\"Nombre\":\"Laura\",\"Apelli', '{\"idBeneficiario\":33,\"Nombre\":\"Carlos\",\"Apell', 4, 33, '2024-12-13 18:23:52', '2024-12-13 18:23:52'),
-(9, 'Actualización', '{\"idBeneficiario\":34,\"Nombre\":\"Laura1\",\"Apell', '{\"idBeneficiario\":34,\"Nombre\":\"Andrés\",\"Apell', 1, 34, '2024-12-13 18:32:41', '2024-12-13 18:32:41'),
-(10, 'Eliminación', '{\"idBeneficiario\":32,\"Nombre\":\"María\",\"Apelli', 'N/A', 1, 32, '2024-12-13 19:13:35', '2024-12-13 19:13:35'),
-(11, 'Eliminación', '{\"idBeneficiario\":29,\"Nombre\":\"Carlos\",\"Apell', 'N/A', 4, 29, '2024-12-13 19:15:42', '2024-12-13 19:15:42'),
-(12, 'Creación', 'N/A', '{\"idDocumentos\":19,\"NombreDocumento\":\"Cedula\"', 4, 33, '2024-12-13 19:51:30', '2024-12-13 19:51:30'),
-(13, 'Creación', 'N/A', '{\"idDocumentos\":20,\"NombreDocumento\":\"Cedula\"', 1, 19, '2024-12-13 19:53:11', '2024-12-13 19:53:11'),
-(14, 'Eliminación', '{\"idDocumentos\":13,\"NombreDocumento\":\"Cedula\"', 'N/A', 4, 13, '2024-12-13 20:04:24', '2024-12-13 20:04:24'),
-(15, 'Eliminación', '{\"idDocumentos\":20,\"NombreDocumento\":\"Cedula\"', 'N/A', 4, 19, '2024-12-13 20:05:00', '2024-12-13 20:05:00'),
-(16, 'Eliminación', '{\"idDocumentos\":19,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 33, '2024-12-13 20:05:37', '2024-12-13 20:05:37'),
-(17, 'Eliminación', '{\"idDocumentos\":18,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 34, '2024-12-13 20:06:29', '2024-12-13 20:06:29'),
-(18, 'Eliminación', '{\"idDocumentos\":16,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 13, '2024-12-13 20:06:33', '2024-12-13 20:06:33'),
-(19, 'Eliminación', '{\"idDocumentos\":15,\"NombreDocumento\":\"Cedula\"', 'N/A', 1, 13, '2024-12-13 20:07:12', '2024-12-13 20:07:12');
-
 -- --------------------------------------------------------
 
 --
@@ -223,17 +142,10 @@ INSERT INTO `historialcambio` (`idHistorialCambio`, `Accion`, `ValorAnterior`, `
 
 CREATE TABLE `rol` (
   `idRol` int(10) UNSIGNED NOT NULL,
-  `Rol` varchar(45) NOT NULL
+  `Rol` varchar(45) NOT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `rol`
---
-
-INSERT INTO `rol` (`idRol`, `Rol`) VALUES
-(1, 'admin_super'),
-(2, 'admin_registrador'),
-(3, 'admin_lector');
 
 -- --------------------------------------------------------
 
@@ -243,17 +155,10 @@ INSERT INTO `rol` (`idRol`, `Rol`) VALUES
 
 CREATE TABLE `tipodocumento` (
   `idTipoDocumento` int(10) UNSIGNED NOT NULL,
-  `TipoDocumento` varchar(45) NOT NULL
+  `TipoDocumento` varchar(45) NOT NULL,
+  `createdAt` datetime DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `tipodocumento`
---
-
-INSERT INTO `tipodocumento` (`idTipoDocumento`, `TipoDocumento`) VALUES
-(1, 'Cedula de ciudadanía '),
-(2, 'Cedula de ciudadanía extranjera'),
-(3, 'Pasaporte');
 
 --
 -- Índices para tablas volcadas
@@ -263,29 +168,19 @@ INSERT INTO `tipodocumento` (`idTipoDocumento`, `TipoDocumento`) VALUES
 -- Indices de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  ADD PRIMARY KEY (`idAdministrador`),
-  ADD UNIQUE KEY `NumeroDocumento` (`NumeroDocumento`),
-  ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
-  ADD KEY `fk_Administrador_Rol1_idx` (`Rol_idRol`),
-  ADD KEY `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
+  ADD PRIMARY KEY (`idAdministrador`);
 
 --
 -- Indices de la tabla `beneficiario`
 --
 ALTER TABLE `beneficiario`
-  ADD PRIMARY KEY (`idBeneficiario`),
-  ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
-  ADD KEY `fk_Persona_Estrato1_idx` (`Estrato_idEstrato`),
-  ADD KEY `fk_Beneficiario_Administrador1_idx` (`Administrador_idAdministrador`),
-  ADD KEY `fk_Beneficiario_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
+  ADD PRIMARY KEY (`idBeneficiario`);
 
 --
 -- Indices de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  ADD PRIMARY KEY (`idDocumentos`),
-  ADD KEY `fk_Detalle_Persona1_idx` (`Beneficiario_idBeneficiario`),
-  ADD KEY `fk_Dcumentos_Administrador1_idx` (`Administrador_idAdministrador`);
+  ADD PRIMARY KEY (`idDocumentos`);
 
 --
 -- Indices de la tabla `estado`
@@ -325,77 +220,49 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiario`
 --
 ALTER TABLE `beneficiario`
-  MODIFY `idBeneficiario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `idBeneficiario` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  MODIFY `idDocumentos` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `idDocumentos` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estrato`
 --
 ALTER TABLE `estrato`
-  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `historialcambio`
 --
 ALTER TABLE `historialcambio`
-  MODIFY `idHistorialCambio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `idHistorialCambio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `administrador`
---
-ALTER TABLE `administrador`
-  ADD CONSTRAINT `fk_Administrador_Rol1` FOREIGN KEY (`Rol_idRol`) REFERENCES `rol` (`idRol`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Administrador_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Persona_Estado10` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `beneficiario`
---
-ALTER TABLE `beneficiario`
-  ADD CONSTRAINT `fk_Beneficiario_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Beneficiario_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Persona_Estado1` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Persona_Estrato1` FOREIGN KEY (`Estrato_idEstrato`) REFERENCES `estrato` (`idEstrato`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Filtros para la tabla `documentos`
---
-ALTER TABLE `documentos`
-  ADD CONSTRAINT `fk_Dcumentos_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_Detalle_Persona1` FOREIGN KEY (`Beneficiario_idBeneficiario`) REFERENCES `beneficiario` (`idBeneficiario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

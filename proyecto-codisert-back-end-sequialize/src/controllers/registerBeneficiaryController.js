@@ -1,6 +1,10 @@
-const { Op } = require('sequelize');  // Importamos Op de Sequelize
-const { Beneficiario } = require('../models/Beneficiario'); // Importamos el modelo Sequelize
-const { HistorialCambio } = require('../models/HistorialCambio');  // Importa el modelo para historial de cambios
+const { Op } = require('sequelize');
+const { Beneficiario } = require('../models/Beneficiario');
+const { HistorialCambio } = require('../models/HistorialCambio');
+const Estado = require('../models/Estado');
+const Estrato = require('../models/Estrato');
+const TipoDocumento = require('../models/TipoDocumento');
+const Administrador = require('../models/Administrador');
 
 const registerBeneficiaryController = {
   // Registrar un beneficiario
@@ -13,7 +17,6 @@ const registerBeneficiaryController = {
       Telefono,
       Celular,
       Correo,
-      Estrato,
       FechaInicio,
       FechaFin,
       CodigoDaneDpmto,
@@ -32,7 +35,7 @@ const registerBeneficiaryController = {
     // Validar campos obligatorios
     if (
       !Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento ||
-      !Correo || !Estrato || !FechaInicio || !CodigoDaneDpmto || !CodigoDaneMunicipio ||
+      !Correo || !FechaInicio || !CodigoDaneDpmto || !CodigoDaneMunicipio ||
       !Direccion || !Estado_idEstado || !Estrato_idEstrato
     ) {
       return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
@@ -59,7 +62,6 @@ const registerBeneficiaryController = {
         Telefono: Telefono || null,  // Campo opcional
         Celular: Celular || null,    // Campo opcional
         Correo,
-        Estrato,
         FechaInicio,
         FechaFin: FechaFin || null,  // Campo opcional
         CodigoDaneDpmto,
@@ -83,9 +85,6 @@ const registerBeneficiaryController = {
         Beneficiario_idBeneficiario: newBeneficiary.idBeneficiario,
       });
 
-      // Aseguramos que el beneficiario se ha creado correctamente y enviamos una respuesta exitosa
-      console.log('Nuevo Beneficiario creado:', newBeneficiary);  // Agregamos log para depuración
-
       res.status(201).json({
         message: 'Beneficiario registrado exitosamente',
         newBeneficiaryId: newBeneficiary.idBeneficiario,  // ID del beneficiario recién registrado
@@ -102,19 +101,65 @@ const registerBeneficiaryController = {
   // Obtener todos los beneficiarios
   async getAllBeneficiaries(req, res) {
     try {
-      // Obtener todos los beneficiarios desde la base de datos
-      const beneficiaries = await Beneficiario.findAll();
+      const beneficiaries = await Beneficiario.findAll({
+        include: [
+          {
+            model: Estado,
+            attributes: ['Estado'],
+            as: 'estado',
+          },
+          {
+            model: Estrato,
+            attributes: ['Estrato'],
+            as: 'estrato',
+          },
+          {
+            model: TipoDocumento,
+            attributes: ['TipoDocumento'],
+            as: 'tipoDocumento',
+          },
+          {
+            model: Administrador,
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
+            as: 'administrador',
+          },
+        ],
+      });
 
-      // Verificar que los beneficiarios se hayan encontrado
       if (beneficiaries.length === 0) {
         return res.status(404).json({ message: 'No se encontraron beneficiarios' });
       }
 
-      console.log('Beneficiarios obtenidos:', beneficiaries);
+      const formattedBeneficiaries = beneficiaries.map(beneficiary => ({
+        idBeneficiario: beneficiary.idBeneficiario,
+        Nombre: beneficiary.Nombre,
+        Apellido: beneficiary.Apellido,
+        TipoDocumento: beneficiary.tipoDocumento ? beneficiary.tipoDocumento.TipoDocumento : null,
+        NumeroDocumento: beneficiary.NumeroDocumento,
+        Telefono: beneficiary.Telefono,
+        Celular: beneficiary.Celular,
+        Correo: beneficiary.Correo,
+        Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaInicio: beneficiary.FechaInicio,
+        FechaFin: beneficiary.FechaFin,
+        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
+        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
+        Departamento: beneficiary.Departamento,
+        Municipio: beneficiary.Municipio,
+        Direccion: beneficiary.Direccion,
+        Barrio: beneficiary.Barrio,
+        Anexo: beneficiary.Anexo,
+        Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Administrador: {
+          idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
+          Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
+          Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
+        },
+      }));
 
       res.status(200).json({
         message: 'Lista de beneficiarios obtenida exitosamente',
-        data: beneficiaries,
+        data: formattedBeneficiaries,
       });
     } catch (err) {
       console.error('Error al obtener la lista de beneficiarios:', err);
@@ -125,20 +170,70 @@ const registerBeneficiaryController = {
     }
   },
 
+  // Obtener un beneficiario por su ID
   async getBeneficiaryById(req, res) {
-    const { id } = req.params;  // ID del beneficiario a consultar
+    const { id } = req.params;
 
     try {
-      // Buscar el beneficiario por ID
-      const beneficiary = await Beneficiario.findByPk(id);
+      const beneficiary = await Beneficiario.findByPk(id, {
+        include: [
+          {
+            model: Estado,
+            attributes: ['Estado'],
+            as: 'estado',
+          },
+          {
+            model: Estrato,
+            attributes: ['Estrato'],
+            as: 'estrato',
+          },
+          {
+            model: TipoDocumento,
+            attributes: ['TipoDocumento'],
+            as: 'tipoDocumento',
+          },
+          {
+            model: Administrador,
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
+            as: 'administrador',
+          },
+        ],
+      });
 
       if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
 
+      const formattedBeneficiary = {
+        idBeneficiario: beneficiary.idBeneficiario,
+        Nombre: beneficiary.Nombre,
+        Apellido: beneficiary.Apellido,
+        TipoDocumento: beneficiary.tipoDocumento ? beneficiary.tipoDocumento.TipoDocumento : null,
+        NumeroDocumento: beneficiary.NumeroDocumento,
+        Telefono: beneficiary.Telefono,
+        Celular: beneficiary.Celular,
+        Correo: beneficiary.Correo,
+        Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaInicio: beneficiary.FechaInicio,
+        FechaFin: beneficiary.FechaFin,
+        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
+        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
+        Departamento: beneficiary.Departamento,
+        Municipio: beneficiary.Municipio,
+        Direccion: beneficiary.Direccion,
+        Barrio: beneficiary.Barrio,
+        Anexo: beneficiary.Anexo,
+        Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Administrador: {
+          idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
+          Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
+          Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
+        },
+      };
+
       res.status(200).json({
         message: 'Beneficiario encontrado exitosamente',
-        data: beneficiary,
+        data: formattedBeneficiary,
       });
     } catch (err) {
       console.error('Error al obtener el beneficiario por ID:', err);
@@ -151,21 +246,69 @@ const registerBeneficiaryController = {
 
   // Obtener un beneficiario por su número de documento
   async getBeneficiaryByNumeroDocumento(req, res) {
-    const { numeroDocumento } = req.params;  // Número de documento del beneficiario a consultar
+    const { numeroDocumento } = req.params;
 
     try {
-      // Buscar el beneficiario por número de documento
       const beneficiary = await Beneficiario.findOne({
         where: { NumeroDocumento: numeroDocumento },
+        include: [
+          {
+            model: Estado,
+            attributes: ['Estado'],
+            as: 'estado',
+          },
+          {
+            model: Estrato,
+            attributes: ['Estrato'],
+            as: 'estrato',
+          },
+          {
+            model: TipoDocumento,
+            attributes: ['TipoDocumento'],
+            as: 'tipoDocumento',
+          },
+          {
+            model: Administrador,
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
+            as: 'administrador',
+          },
+        ],
       });
 
       if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
 
+      const formattedBeneficiary = {
+        idBeneficiario: beneficiary.idBeneficiario,
+        Nombre: beneficiary.Nombre,
+        Apellido: beneficiary.Apellido,
+        TipoDocumento: beneficiary.tipoDocumento ? beneficiary.tipoDocumento.TipoDocumento : null,
+        NumeroDocumento: beneficiary.NumeroDocumento,
+        Telefono: beneficiary.Telefono,
+        Celular: beneficiary.Celular,
+        Correo: beneficiary.Correo,
+        Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaInicio: beneficiary.FechaInicio,
+        FechaFin: beneficiary.FechaFin,
+        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
+        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
+        Departamento: beneficiary.Departamento,
+        Municipio: beneficiary.Municipio,
+        Direccion: beneficiary.Direccion,
+        Barrio: beneficiary.Barrio,
+        Anexo: beneficiary.Anexo,
+        Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Administrador: {
+          idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
+          Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
+          Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
+        },
+      };
+
       res.status(200).json({
         message: 'Beneficiario encontrado exitosamente',
-        data: beneficiary,
+        data: formattedBeneficiary,
       });
     } catch (err) {
       console.error('Error al obtener el beneficiario por número de documento:', err);
@@ -187,7 +330,6 @@ const registerBeneficiaryController = {
       Telefono,
       Celular,
       Correo,
-      Estrato,
       FechaInicio,
       FechaFin,
       CodigoDaneDpmto,
@@ -225,7 +367,7 @@ const registerBeneficiaryController = {
 
       // Registrar los cambios en el HistorialCambio
       const previousData = JSON.stringify(existingBeneficiary);
-      
+
       // Actualizar los datos del beneficiario
       await existingBeneficiary.update({
         Nombre: Nombre || existingBeneficiary.Nombre,
@@ -235,7 +377,6 @@ const registerBeneficiaryController = {
         Telefono: Telefono || existingBeneficiary.Telefono,
         Celular: Celular || existingBeneficiary.Celular,
         Correo: Correo || existingBeneficiary.Correo,
-        Estrato: Estrato || existingBeneficiary.Estrato,
         FechaInicio: FechaInicio || existingBeneficiary.FechaInicio,
         FechaFin: FechaFin || existingBeneficiary.FechaFin,
         CodigoDaneDpmto: CodigoDaneDpmto || existingBeneficiary.CodigoDaneDpmto,
@@ -270,11 +411,33 @@ const registerBeneficiaryController = {
 
   // Eliminar un beneficiario
   async deleteBeneficiary(req, res) {
-    const { id } = req.params; // ID del beneficiario a eliminar
+    const { id } = req.params;
 
     try {
-      // Verificar si el beneficiario existe
-      const existingBeneficiary = await Beneficiario.findByPk(id);
+      const existingBeneficiary = await Beneficiario.findByPk(id, {
+        include: [
+          {
+            model: Estado,
+            attributes: ['Estado'],
+            as: 'estado',
+          },
+          {
+            model: Estrato,
+            attributes: ['Estrato'],
+            as: 'estrato',
+          },
+          {
+            model: TipoDocumento,
+            attributes: ['TipoDocumento'],
+            as: 'tipoDocumento',
+          },
+          {
+            model: Administrador,
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
+            as: 'administrador',
+          },
+        ],
+      });
 
       if (!existingBeneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });

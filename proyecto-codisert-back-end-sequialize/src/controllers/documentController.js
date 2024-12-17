@@ -1,7 +1,9 @@
-const  Documento  = require('../models/Documento');
+const Documento = require('../models/Documento');
 const { HistorialCambio } = require('../models/HistorialCambio');
 const path = require('path');
 const fs = require('fs').promises;
+const { Beneficiario } = require('../models/Beneficiario');
+const Administrador = require('../models/Administrador');
 
 const registerDocumentController = {
   // Función para cargar un documento
@@ -62,16 +64,47 @@ const registerDocumentController = {
   // Función para obtener todos los documentos
   async getAllDocuments(req, res) {
     try {
-      // Obtener todos los documentos de la base de datos
-      const documentos = await Documento.findAll();
+      // Obtener todos los documentos, incluyendo los datos del beneficiario (id, Nombre, Apellido) y del administrador
+      const documentos = await Documento.findAll({
+        include: [
+          {
+            model: Beneficiario, // Relación con el modelo Beneficiario
+            attributes: ['idBeneficiario', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del beneficiario
+            as: 'beneficiario', // Alias de la relación
+          },
+          {
+            model: Administrador, // Relación con el modelo Administrador
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del administrador
+            as: 'administrador', // Alias de la relación
+          }
+        ],
+      });
 
       if (documentos.length === 0) {
         return res.status(404).json({ message: 'No hay documentos registrados' });
       }
 
+      // Estructuramos la respuesta para incluir los datos del beneficiario y del administrador dentro de cada documento
+      const documentosConBeneficiarioYAdministrador = documentos.map(doc => ({
+        idDocumentos: doc.idDocumentos,
+        NombreDocumento: doc.NombreDocumento,
+        TipoDocumento: doc.TipoDocumento,
+        Url: doc.Url,
+        Beneficiario: {
+          idBeneficiario: doc.beneficiario.idBeneficiario,
+          Nombre: doc.beneficiario.Nombre,
+          Apellido: doc.beneficiario.Apellido,
+        },
+        Administrador: {
+          idAdministrador: doc.administrador.idAdministrador,
+          Nombre: doc.administrador.Nombre,
+          Apellido: doc.administrador.Apellido,
+        },
+      }));
+
       res.status(200).json({
         message: 'Documentos encontrados',
-        documents: documentos,
+        documents: documentosConBeneficiarioYAdministrador,
       });
     } catch (err) {
       res.status(500).json({ message: 'Error al obtener los documentos', error: err.message });
@@ -86,15 +119,45 @@ const registerDocumentController = {
       // Buscar los documentos del beneficiario usando Sequelize
       const documentos = await Documento.findAll({
         where: { Beneficiario_idBeneficiario: idBeneficiario },
+        include: [
+          {
+            model: Beneficiario, // Relación con el modelo Beneficiario
+            attributes: ['idBeneficiario', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del beneficiario
+            as: 'beneficiario',  // Alias para la relación
+          },
+          {
+            model: Administrador, // Relación con el modelo Administrador
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del administrador
+            as: 'administrador',  // Alias para la relación
+          }
+        ],
       });
 
       if (documentos.length === 0) {
         return res.status(404).json({ message: 'No se encontraron documentos para este beneficiario' });
       }
 
+      // Estructuramos la respuesta para incluir los datos del beneficiario y del administrador dentro de cada documento
+      const documentosConBeneficiarioYAdministrador = documentos.map(doc => ({
+        idDocumentos: doc.idDocumentos,
+        NombreDocumento: doc.NombreDocumento,
+        TipoDocumento: doc.TipoDocumento,
+        Url: doc.Url,
+        Beneficiario: {
+          idBeneficiario: doc.beneficiario.idBeneficiario,
+          Nombre: doc.beneficiario.Nombre,
+          Apellido: doc.beneficiario.Apellido,
+        },
+        Administrador: {
+          idAdministrador: doc.administrador.idAdministrador,
+          Nombre: doc.administrador.Nombre,
+          Apellido: doc.administrador.Apellido,
+        },
+      }));
+
       res.status(200).json({
         message: 'Documentos encontrados',
-        documents: documentos,
+        documents: documentosConBeneficiarioYAdministrador,
       });
     } catch (err) {
       res.status(500).json({ message: 'Error al obtener los documentos', error: err.message });
@@ -106,9 +169,21 @@ const registerDocumentController = {
     try {
       const { idDocumentos } = req.params;  // Obtenemos el id del documento desde los parámetros de la URL
 
-      // Buscar el documento por su ID usando Sequelize
+      // Buscar el documento por su ID usando Sequelize e incluir las relaciones con Beneficiario y Administrador
       const documento = await Documento.findOne({
         where: { idDocumentos },  // Filtramos por el id del documento
+        include: [
+          {
+            model: Beneficiario, // Relación con el modelo Beneficiario
+            attributes: ['idBeneficiario', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del beneficiario
+            as: 'beneficiario',  // Alias para la relación
+          },
+          {
+            model: Administrador, // Relación con el modelo Administrador
+            attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Traemos id, Nombre y Apellido del administrador
+            as: 'administrador',  // Alias para la relación
+          }
+        ],
       });
 
       // Si no se encuentra el documento
@@ -119,7 +194,22 @@ const registerDocumentController = {
       // Si se encuentra el documento
       res.status(200).json({
         message: 'Documento encontrado',
-        document: documento,
+        document: {
+          idDocumentos: documento.idDocumentos,
+          NombreDocumento: documento.NombreDocumento,
+          TipoDocumento: documento.TipoDocumento,
+          Url: documento.Url,
+          Beneficiario: {
+            idBeneficiario: documento.beneficiario.idBeneficiario,
+            Nombre: documento.beneficiario.Nombre,
+            Apellido: documento.beneficiario.Apellido,
+          },
+          Administrador: {
+            idAdministrador: documento.administrador.idAdministrador,
+            Nombre: documento.administrador.Nombre,
+            Apellido: documento.administrador.Apellido,
+          },
+        },
       });
     } catch (err) {
       console.error('Error al obtener el documento:', err);

@@ -11,7 +11,7 @@ const authMiddleware = (role) => (req, res, next) => {
     if (role && decoded.role !== role) {
       return res.status(403).json({ message: 'No autorizado para este rol' });
     }
-    
+
     req.user = decoded; // Asignar los datos del usuario decodificado al request
     next();
   } catch (err) {

@@ -1,19 +1,21 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Importa la configuración de Sequelize
+const sequelize = require('../config/db');
 
-const Role = sequelize.define('Role', {
+const Role = sequelize.define('Rol', {
   idRol: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
   },
   Rol: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(45),
     allowNull: false,
   },
 }, {
-  tableName: 'rol',  // Nombre de la tabla en la base de datos
-  timestamps: false, // Si no tienes createdAt y updatedAt, ponlo en false
+  tableName: 'Rol',
+  timestamps: true,
 });
 
 module.exports = Role;
+
+
