@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-12-2024 a las 20:48:22
+-- Tiempo de generación: 18-12-2024 a las 05:17:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -35,13 +35,20 @@ CREATE TABLE `administrador` (
   `NumeroDocumento` varchar(45) NOT NULL,
   `Telefono` varchar(45) DEFAULT NULL,
   `Correo` varchar(45) NOT NULL,
-  `Password` varchar(100) NOT NULL,
+  `Password` varchar(255) NOT NULL,
   `Estado_idEstado` int(10) UNSIGNED NOT NULL,
   `Rol_idRol` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(11) DEFAULT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `administrador`
+--
+
+INSERT INTO `administrador` (`idAdministrador`, `Nombre`, `Apellido`, `TipoDocumento_idTipoDocumento`, `NumeroDocumento`, `Telefono`, `Correo`, `Password`, `Estado_idEstado`, `Rol_idRol`, `Administrador_idAdministrador`, `createdAt`, `updatedAt`) VALUES
+(1, 'Ivan Dario', 'Valencia', 1, '1234567890', '123456789', 'superadmin@dominio.com', '$2b$10$yGle9wb3pWSPSuKw6w9VZ.rvT83Xb3jjM3Csd/HXLj4KG44RP6.oG', 1, 1, NULL, '2024-12-18 04:00:18', '2024-12-18 04:05:20');
 
 -- --------------------------------------------------------
 
@@ -57,13 +64,13 @@ CREATE TABLE `beneficiario` (
   `NumeroDocumento` varchar(45) NOT NULL,
   `Telefono` varchar(45) DEFAULT NULL,
   `Celular` varchar(45) DEFAULT NULL,
-  `Correo` varchar(45) NOT NULL,
+  `Correo` varchar(45) DEFAULT NULL,
   `FechaInicio` varchar(45) NOT NULL,
   `FechaFin` varchar(45) DEFAULT NULL,
   `CodigoDaneDpmto` varchar(45) NOT NULL,
-  `Departamento` varchar(255) DEFAULT NULL,
+  `Departamento` varchar(45) NOT NULL,
   `CodigoDaneMunicipio` varchar(45) NOT NULL,
-  `Municipio` varchar(255) DEFAULT NULL,
+  `Municipio` varchar(45) NOT NULL,
   `Direccion` varchar(45) NOT NULL,
   `Barrio` varchar(45) DEFAULT NULL,
   `Anexo` varchar(255) DEFAULT NULL,
@@ -72,7 +79,7 @@ CREATE TABLE `beneficiario` (
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -84,12 +91,12 @@ CREATE TABLE `documentos` (
   `idDocumentos` int(10) UNSIGNED NOT NULL,
   `NombreDocumento` varchar(45) NOT NULL,
   `TipoDocumento` varchar(45) NOT NULL,
-  `Url` varchar(45) NOT NULL,
+  `Url` varchar(255) NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -100,9 +107,19 @@ CREATE TABLE `documentos` (
 CREATE TABLE `estado` (
   `idEstado` int(10) UNSIGNED NOT NULL,
   `Estado` varchar(45) NOT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `estado`
+--
+
+INSERT INTO `estado` (`idEstado`, `Estado`, `createdAt`, `updatedAt`) VALUES
+(1, 'Activo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
+(2, 'Inactivo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
+(3, 'Operativo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
+(4, 'Suspendido', '2024-12-18 04:00:15', '2024-12-18 04:00:15');
 
 -- --------------------------------------------------------
 
@@ -113,9 +130,21 @@ CREATE TABLE `estado` (
 CREATE TABLE `estrato` (
   `idEstrato` int(10) UNSIGNED NOT NULL,
   `Estrato` varchar(45) NOT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `estrato`
+--
+
+INSERT INTO `estrato` (`idEstrato`, `Estrato`, `createdAt`, `updatedAt`) VALUES
+(1, '1', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
+(2, '2', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
+(3, '3', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
+(4, '4', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
+(5, '5', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
+(6, '6', '2024-12-18 04:00:17', '2024-12-18 04:00:17');
 
 -- --------------------------------------------------------
 
@@ -126,13 +155,13 @@ CREATE TABLE `estrato` (
 CREATE TABLE `historialcambio` (
   `idHistorialCambio` int(10) UNSIGNED NOT NULL,
   `Accion` varchar(45) NOT NULL,
-  `ValorAnterior` varchar(45) NOT NULL,
-  `ValorNuevo` varchar(45) DEFAULT NULL,
+  `ValorAnterior` varchar(255) NOT NULL,
+  `ValorNuevo` varchar(255) DEFAULT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
-  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `updatedAt` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -143,9 +172,18 @@ CREATE TABLE `historialcambio` (
 CREATE TABLE `rol` (
   `idRol` int(10) UNSIGNED NOT NULL,
   `Rol` varchar(45) NOT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `rol`
+--
+
+INSERT INTO `rol` (`idRol`, `Rol`, `createdAt`, `updatedAt`) VALUES
+(1, 'admin_super', '2024-12-18 04:00:14', '2024-12-18 04:00:14'),
+(2, 'admin_registrador', '2024-12-18 04:00:14', '2024-12-18 04:00:14'),
+(3, 'admin_lector', '2024-12-18 04:00:14', '2024-12-18 04:00:14');
 
 -- --------------------------------------------------------
 
@@ -156,9 +194,18 @@ CREATE TABLE `rol` (
 CREATE TABLE `tipodocumento` (
   `idTipoDocumento` int(10) UNSIGNED NOT NULL,
   `TipoDocumento` varchar(45) NOT NULL,
-  `createdAt` datetime DEFAULT current_timestamp(),
-  `updatedAt` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `tipodocumento`
+--
+
+INSERT INTO `tipodocumento` (`idTipoDocumento`, `TipoDocumento`, `createdAt`, `updatedAt`) VALUES
+(1, 'Cedula de ciudadanía', '2024-12-18 04:00:18', '2024-12-18 04:00:18'),
+(2, 'Cedula de ciudadanía extranjera', '2024-12-18 04:00:18', '2024-12-18 04:00:18'),
+(3, 'Pasaporte', '2024-12-18 04:00:18', '2024-12-18 04:00:18');
 
 --
 -- Índices para tablas volcadas
@@ -168,19 +215,29 @@ CREATE TABLE `tipodocumento` (
 -- Indices de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  ADD PRIMARY KEY (`idAdministrador`);
+  ADD PRIMARY KEY (`idAdministrador`),
+  ADD UNIQUE KEY `NumeroDocumento_UNIQUE` (`NumeroDocumento`),
+  ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
+  ADD KEY `fk_Administrador_Rol1_idx` (`Rol_idRol`),
+  ADD KEY `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
 
 --
 -- Indices de la tabla `beneficiario`
 --
 ALTER TABLE `beneficiario`
-  ADD PRIMARY KEY (`idBeneficiario`);
+  ADD PRIMARY KEY (`idBeneficiario`),
+  ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
+  ADD KEY `fk_Persona_Estrato1_idx` (`Estrato_idEstrato`),
+  ADD KEY `fk_Beneficiario_Administrador1_idx` (`Administrador_idAdministrador`),
+  ADD KEY `fk_Beneficiario_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
 
 --
 -- Indices de la tabla `documentos`
 --
 ALTER TABLE `documentos`
-  ADD PRIMARY KEY (`idDocumentos`);
+  ADD PRIMARY KEY (`idDocumentos`),
+  ADD KEY `fk_Dcumentos_Administrador1_idx` (`Administrador_idAdministrador`),
+  ADD KEY `fk_Dcumentos_Beneficiario1_idx` (`Beneficiario_idBeneficiario`);
 
 --
 -- Indices de la tabla `estado`
@@ -220,7 +277,7 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiario`
@@ -238,13 +295,13 @@ ALTER TABLE `documentos`
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `estrato`
 --
 ALTER TABLE `estrato`
-  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `historialcambio`
@@ -256,13 +313,41 @@ ALTER TABLE `historialcambio`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `administrador`
+--
+ALTER TABLE `administrador`
+  ADD CONSTRAINT `fk_Administrador_Rol1` FOREIGN KEY (`Rol_idRol`) REFERENCES `rol` (`idRol`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Administrador_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Persona_Estado10` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `beneficiario`
+--
+ALTER TABLE `beneficiario`
+  ADD CONSTRAINT `fk_Beneficiario_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Beneficiario_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Persona_Estado1` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Persona_Estrato1` FOREIGN KEY (`Estrato_idEstrato`) REFERENCES `estrato` (`idEstrato`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `documentos`
+--
+ALTER TABLE `documentos`
+  ADD CONSTRAINT `fk_Dcumentos_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Dcumentos_Beneficiario1` FOREIGN KEY (`Beneficiario_idBeneficiario`) REFERENCES `beneficiario` (`idBeneficiario`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

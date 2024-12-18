@@ -3,7 +3,10 @@ const bcrypt = require('bcrypt');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    // Inserta un administrador 'admin_super'
+    // Encriptar la contraseña
+    const hashedPassword = await bcrypt.hash('1234567890', 10);
+
+    // Insertar un administrador 'admin_super'
     await queryInterface.bulkInsert('administrador', [{
       Nombre: 'Ivan Dario',
       Apellido: 'Valencia',
@@ -11,7 +14,7 @@ module.exports = {
       NumeroDocumento: '1234567890',     // Ajusta según lo necesario
       Telefono: '123456789',
       Correo: 'superadmin@dominio.com',   // Asegúrate de que este correo sea único
-      Password: await bcrypt.hash('1234567890', 10), // Contraseña encriptada
+      Password: hashedPassword, // Contraseña encriptada
       Estado_idEstado: 1,                 // Ajusta este valor según tu base de datos
       Rol_idRol: 1,                       // Asegúrate de que el rol `admin_super` esté creado y su ID sea 1
       Administrador_idAdministrador: null, // Es el administrador principal
