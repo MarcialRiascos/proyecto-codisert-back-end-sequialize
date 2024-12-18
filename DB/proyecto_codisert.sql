@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-12-2024 a las 05:17:01
+-- Tiempo de generación: 18-12-2024 a las 07:38:39
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -42,13 +42,6 @@ CREATE TABLE `administrador` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `administrador`
---
-
-INSERT INTO `administrador` (`idAdministrador`, `Nombre`, `Apellido`, `TipoDocumento_idTipoDocumento`, `NumeroDocumento`, `Telefono`, `Correo`, `Password`, `Estado_idEstado`, `Rol_idRol`, `Administrador_idAdministrador`, `createdAt`, `updatedAt`) VALUES
-(1, 'Ivan Dario', 'Valencia', 1, '1234567890', '123456789', 'superadmin@dominio.com', '$2b$10$yGle9wb3pWSPSuKw6w9VZ.rvT83Xb3jjM3Csd/HXLj4KG44RP6.oG', 1, 1, NULL, '2024-12-18 04:00:18', '2024-12-18 04:05:20');
 
 -- --------------------------------------------------------
 
@@ -111,16 +104,6 @@ CREATE TABLE `estado` (
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Volcado de datos para la tabla `estado`
---
-
-INSERT INTO `estado` (`idEstado`, `Estado`, `createdAt`, `updatedAt`) VALUES
-(1, 'Activo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
-(2, 'Inactivo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
-(3, 'Operativo', '2024-12-18 04:00:15', '2024-12-18 04:00:15'),
-(4, 'Suspendido', '2024-12-18 04:00:15', '2024-12-18 04:00:15');
-
 -- --------------------------------------------------------
 
 --
@@ -134,18 +117,6 @@ CREATE TABLE `estrato` (
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Volcado de datos para la tabla `estrato`
---
-
-INSERT INTO `estrato` (`idEstrato`, `Estrato`, `createdAt`, `updatedAt`) VALUES
-(1, '1', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
-(2, '2', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
-(3, '3', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
-(4, '4', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
-(5, '5', '2024-12-18 04:00:17', '2024-12-18 04:00:17'),
-(6, '6', '2024-12-18 04:00:17', '2024-12-18 04:00:17');
-
 -- --------------------------------------------------------
 
 --
@@ -155,8 +126,8 @@ INSERT INTO `estrato` (`idEstrato`, `Estrato`, `createdAt`, `updatedAt`) VALUES
 CREATE TABLE `historialcambio` (
   `idHistorialCambio` int(10) UNSIGNED NOT NULL,
   `Accion` varchar(45) NOT NULL,
-  `ValorAnterior` varchar(255) NOT NULL,
-  `ValorNuevo` varchar(255) DEFAULT NULL,
+  `ValorAnterior` varchar(600) NOT NULL,
+  `ValorNuevo` varchar(600) DEFAULT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -176,15 +147,6 @@ CREATE TABLE `rol` (
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
---
--- Volcado de datos para la tabla `rol`
---
-
-INSERT INTO `rol` (`idRol`, `Rol`, `createdAt`, `updatedAt`) VALUES
-(1, 'admin_super', '2024-12-18 04:00:14', '2024-12-18 04:00:14'),
-(2, 'admin_registrador', '2024-12-18 04:00:14', '2024-12-18 04:00:14'),
-(3, 'admin_lector', '2024-12-18 04:00:14', '2024-12-18 04:00:14');
-
 -- --------------------------------------------------------
 
 --
@@ -197,15 +159,6 @@ CREATE TABLE `tipodocumento` (
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `tipodocumento`
---
-
-INSERT INTO `tipodocumento` (`idTipoDocumento`, `TipoDocumento`, `createdAt`, `updatedAt`) VALUES
-(1, 'Cedula de ciudadanía', '2024-12-18 04:00:18', '2024-12-18 04:00:18'),
-(2, 'Cedula de ciudadanía extranjera', '2024-12-18 04:00:18', '2024-12-18 04:00:18'),
-(3, 'Pasaporte', '2024-12-18 04:00:18', '2024-12-18 04:00:18');
 
 --
 -- Índices para tablas volcadas
@@ -277,7 +230,7 @@ ALTER TABLE `tipodocumento`
 -- AUTO_INCREMENT de la tabla `administrador`
 --
 ALTER TABLE `administrador`
-  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiario`
@@ -295,13 +248,13 @@ ALTER TABLE `documentos`
 -- AUTO_INCREMENT de la tabla `estado`
 --
 ALTER TABLE `estado`
-  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `idEstado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `estrato`
 --
 ALTER TABLE `estrato`
-  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `historialcambio`
@@ -313,13 +266,13 @@ ALTER TABLE `historialcambio`
 -- AUTO_INCREMENT de la tabla `rol`
 --
 ALTER TABLE `rol`
-  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
-  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas

@@ -155,6 +155,8 @@ const registerBeneficiaryController = {
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
           Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
         },
+        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
+        UpdatedAt: beneficiary.updatedAt,// Incluyendo la fecha de actualización
       }));
 
       res.status(200).json({
@@ -229,6 +231,8 @@ const registerBeneficiaryController = {
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
           Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
         },
+        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
+        UpdatedAt: beneficiary.updatedAt, // Incluyendo la fecha de actualización
       };
 
       res.status(200).json({
@@ -304,6 +308,8 @@ const registerBeneficiaryController = {
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
           Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
         },
+        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
+        UpdatedAt: beneficiary.updatedAt, // Incluyendo la fecha de actualización
       };
 
       res.status(200).json({
@@ -318,7 +324,6 @@ const registerBeneficiaryController = {
       });
     }
   },
-
   // Actualizar un beneficiario
   async updateBeneficiary(req, res) {
     const { id } = req.params; // ID del beneficiario a actualizar

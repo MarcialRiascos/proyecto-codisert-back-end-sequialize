@@ -36,10 +36,10 @@ router.delete('/manage/beneficiary/:id', authAdminRegisMiddleware, UsarControlle
 
 
 
-router.get('/historialcambio', authAdminRegisLectMiddleware, historialCambioController.getAllHistorialCambios);
-router.get('/historialcambios/:id', authAdminRegisLectMiddleware, historialCambioController.getHistorialCambioById);
-router.delete('/historialcambio/:id', authAdminRegisMiddleware, historialCambioController.deleteHistorialCambio);
-router.delete('/delhistorialcambio', authAdminRegisMiddleware, historialCambioController.deleteAllHistorialCambio);
+router.get('/historialcambio', authAdminMiddleware, historialCambioController.getAllHistorialCambios);
+router.get('/historialcambios/:id', authAdminMiddleware, historialCambioController.getHistorialCambioById);
+router.delete('/historialcambio/:id', authAdminMiddleware, historialCambioController.deleteHistorialCambio);
+router.delete('/delhistorialcambio', authAdminMiddleware, historialCambioController.deleteAllHistorialCambio);
 
 
 module.exports = router;

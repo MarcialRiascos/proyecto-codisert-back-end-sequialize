@@ -30,7 +30,7 @@ const Beneficiario = sequelize.define('Beneficiario', {
   },
   Telefono: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   },
   Celular: {
     type: DataTypes.STRING,
