@@ -6,7 +6,7 @@ module.exports = {
     // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash('1234567890', 10);
 
-    // Insertar un administrador 'admin_super'
+    // Insertar un administrador 'admin_super' con el campo Sexo
     await queryInterface.bulkInsert('administrador', [{
       Nombre: 'Ivan Dario',
       Apellido: 'Valencia',
@@ -18,6 +18,7 @@ module.exports = {
       Estado_idEstado: 1,                 // Ajusta este valor según tu base de datos
       Rol_idRol: 1,                       // Asegúrate de que el rol `admin_super` esté creado y su ID sea 1
       Administrador_idAdministrador: null, // Es el administrador principal
+      Sexo_idSexo: 1,                  // Campo Sexo añadido
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});

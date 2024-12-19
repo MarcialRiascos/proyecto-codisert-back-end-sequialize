@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-12-2024 a las 07:38:39
+-- Tiempo de generación: 19-12-2024 a las 01:01:01
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -39,6 +39,7 @@ CREATE TABLE `administrador` (
   `Estado_idEstado` int(10) UNSIGNED NOT NULL,
   `Rol_idRol` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(11) DEFAULT NULL,
+  `Sexo_idSexo` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -70,6 +71,7 @@ CREATE TABLE `beneficiario` (
   `Estado_idEstado` int(10) UNSIGNED NOT NULL,
   `Estrato_idEstrato` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
+  `Sexo_idSexo` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -150,6 +152,19 @@ CREATE TABLE `rol` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sexo`
+--
+
+CREATE TABLE `sexo` (
+  `idSexo` int(10) UNSIGNED NOT NULL,
+  `Sexo` varchar(45) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipodocumento`
 --
 
@@ -172,7 +187,8 @@ ALTER TABLE `administrador`
   ADD UNIQUE KEY `NumeroDocumento_UNIQUE` (`NumeroDocumento`),
   ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
   ADD KEY `fk_Administrador_Rol1_idx` (`Rol_idRol`),
-  ADD KEY `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
+  ADD KEY `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`),
+  ADD KEY `fk_Administrador_Sexo1_idx` (`Sexo_idSexo`);
 
 --
 -- Indices de la tabla `beneficiario`
@@ -182,7 +198,8 @@ ALTER TABLE `beneficiario`
   ADD KEY `fk_Persona_Estado1_idx` (`Estado_idEstado`),
   ADD KEY `fk_Persona_Estrato1_idx` (`Estrato_idEstrato`),
   ADD KEY `fk_Beneficiario_Administrador1_idx` (`Administrador_idAdministrador`),
-  ADD KEY `fk_Beneficiario_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`);
+  ADD KEY `fk_Beneficiario_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`),
+  ADD KEY `fk_Beneficiario_Sexo1_idx` (`Sexo_idSexo`);
 
 --
 -- Indices de la tabla `documentos`
@@ -215,6 +232,12 @@ ALTER TABLE `historialcambio`
 --
 ALTER TABLE `rol`
   ADD PRIMARY KEY (`idRol`);
+
+--
+-- Indices de la tabla `sexo`
+--
+ALTER TABLE `sexo`
+  ADD PRIMARY KEY (`idSexo`);
 
 --
 -- Indices de la tabla `tipodocumento`
@@ -269,6 +292,12 @@ ALTER TABLE `rol`
   MODIFY `idRol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `sexo`
+--
+ALTER TABLE `sexo`
+  MODIFY `idSexo` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `tipodocumento`
 --
 ALTER TABLE `tipodocumento`
@@ -283,6 +312,7 @@ ALTER TABLE `tipodocumento`
 --
 ALTER TABLE `administrador`
   ADD CONSTRAINT `fk_Administrador_Rol1` FOREIGN KEY (`Rol_idRol`) REFERENCES `rol` (`idRol`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Administrador_Sexo1` FOREIGN KEY (`Sexo_idSexo`) REFERENCES `sexo` (`idSexo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Administrador_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Persona_Estado10` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
@@ -291,6 +321,7 @@ ALTER TABLE `administrador`
 --
 ALTER TABLE `beneficiario`
   ADD CONSTRAINT `fk_Beneficiario_Administrador1` FOREIGN KEY (`Administrador_idAdministrador`) REFERENCES `administrador` (`idAdministrador`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_Beneficiario_Sexo1` FOREIGN KEY (`Sexo_idSexo`) REFERENCES `sexo` (`idSexo`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Beneficiario_TipoDocumento1` FOREIGN KEY (`TipoDocumento_idTipoDocumento`) REFERENCES `tipodocumento` (`idTipoDocumento`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Persona_Estado1` FOREIGN KEY (`Estado_idEstado`) REFERENCES `estado` (`idEstado`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_Persona_Estrato1` FOREIGN KEY (`Estrato_idEstrato`) REFERENCES `estrato` (`idEstrato`) ON DELETE NO ACTION ON UPDATE NO ACTION;

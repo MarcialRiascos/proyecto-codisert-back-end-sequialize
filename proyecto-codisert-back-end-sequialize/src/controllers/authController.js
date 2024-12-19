@@ -32,11 +32,17 @@ const authController = {
       );
 
       // Enviar respuesta al frontend
-      res.status(200).json({
-        message: 'Inicio de sesión exitoso',
-        token,
-        role: role.Rol,
-        user: { id: user.idAdministrador, name: user.Nombre, email: user.Correo },
+      // res.status(200).json({
+      //   message: 'Inicio de sesión exitoso',
+      //   token,
+      //   role: role.Rol,
+      //   user: { id: user.idAdministrador, name: user.Nombre, email: user.Correo },
+      // });
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
       });
     } catch (err) {
       res.status(500).json({ message: 'Error interno del servidor', error: err.message });

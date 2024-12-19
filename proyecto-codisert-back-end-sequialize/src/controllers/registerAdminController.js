@@ -4,6 +4,7 @@ const Administrador = require('../models/Administrador'); // Modelo de Administr
 const Role = require('../models/Role'); // Modelo de Role
 const Estado = require('../models/Estado'); // Modelo de Estado
 const TipoDocumento = require('../models/TipoDocumento'); // Modelo de Estado
+const Sexo = require('../models/Sexo'); // Modelo de Sexo
 
 const registerAdminController = {
   async registerAdmin(req, res) {
@@ -16,13 +17,14 @@ const registerAdminController = {
       Correo,
       Password,
       Estado_idEstado,
-      Rol_idRol
+      Rol_idRol,
+      Sexo_idSexo, // Incluir sexo en la solicitud
     } = req.body;
 
     const idAdministrador = req.user.id; // ID del usuario con sesión activa
 
     // Validar datos de entrada
-    if (!Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento || !Correo || !Password || !Estado_idEstado || !Rol_idRol) {
+    if (!Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento || !Correo || !Password || !Estado_idEstado || !Rol_idRol || !Sexo_idSexo) {
       return res.status(400).json({ message: 'Todos los campos son obligatorios' });
     }
 
@@ -41,6 +43,7 @@ const registerAdminController = {
         Password: hashedPassword,
         Estado_idEstado,
         Rol_idRol,
+        Sexo_idSexo, // Guardar el sexo del administrador
         Administrador_idAdministrador: idAdministrador,
       });
 
@@ -74,6 +77,7 @@ const registerAdminController = {
       Password,
       Estado_idEstado,
       Rol_idRol,
+      Sexo_idSexo, // Incluir sexo en la solicitud
     } = req.body;
 
     try {
@@ -115,6 +119,7 @@ const registerAdminController = {
         Password: hashedPassword || existingAdmin.Password,
         Estado_idEstado: Estado_idEstado || existingAdmin.Estado_idEstado,
         Rol_idRol: Rol_idRol || existingAdmin.Rol_idRol,
+        Sexo_idSexo: Sexo_idSexo || existingAdmin.Sexo_idSexo, // Actualizar el sexo si se proporciona
       });
 
       res.status(200).json({ message: 'Administrador actualizado exitosamente' });
@@ -127,6 +132,10 @@ const registerAdminController = {
     }
   },
 
+  // Resto de las funciones no necesitan cambios significativos para el campo Sexo
+  // Puedes incluir Sexo en las funciones `deleteAdmin`, `getAllAdmins`, y `getAdminById`
+  // donde sea necesario para devolver el sexo del administrador.
+  
   async deleteAdmin(req, res) {
     const { id } = req.params; // ID del administrador a eliminar
 
@@ -172,14 +181,19 @@ const registerAdminController = {
             attributes: ['TipoDocumento'], // Traer el valor de 'TipoDocumento'
           },
           {
+            model: Sexo, // Incluir el modelo Sexo
+            as: 'SexoCreado', // Usar el alias definido en la relación
+            attributes: ['Sexo'], // Traer el valor de 'Sexo'
+          },
+          {
             model: Administrador, // Incluir el administrador que creó/modificó
             as: 'AdministradorCreado', // Alias usado en la relación auto-referenciada
             attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Solo los campos necesarios del administrador
-            required: false // Asegurarse de que la relación sea opcional
+            required: false, // Asegurarse de que la relación sea opcional
           }
         ],
       });
-
+  
       res.status(200).json({
         message: 'Lista de administradores obtenida exitosamente',
         admins,
@@ -195,7 +209,7 @@ const registerAdminController = {
 
   async getAdminById(req, res) {
     const { id } = req.params; // Obtener el ID del administrador de los parámetros
-
+  
     try {
       // Buscar el administrador por ID
       const admin = await Administrador.findByPk(id, {
@@ -207,6 +221,11 @@ const registerAdminController = {
             attributes: ['TipoDocumento'], // Traer solo el valor de 'TipoDocumento'
           },
           {
+            model: Sexo, // Incluir el modelo Sexo
+            as: 'SexoCreado', // Usar el alias definido en la relación
+            attributes: ['Sexo'], // Traer solo el valor de 'Sexo'
+          },
+          {
             model: Administrador, // Incluir el administrador que lo creó/modificó
             as: 'AdministradorCreado', // Alias para la relación auto-referenciada
             attributes: ['idAdministrador', 'Nombre', 'Apellido'], // Campos que quieres obtener del administrador
@@ -214,12 +233,12 @@ const registerAdminController = {
           }
         ],
       });
-
+  
       // Verificar si el administrador existe
       if (!admin) {
         return res.status(404).json({ message: 'Administrador no encontrado' });
       }
-
+  
       res.status(200).json({
         message: 'Administrador encontrado exitosamente',
         admin,

@@ -5,6 +5,7 @@ const Estado = require('../models/Estado');
 const Estrato = require('../models/Estrato');
 const TipoDocumento = require('../models/TipoDocumento');
 const Administrador = require('../models/Administrador');
+const Sexo = require('../models/Sexo'); // Modelo de Sexo
 
 const registerBeneficiaryController = {
   // Registrar un beneficiario
@@ -28,10 +29,11 @@ const registerBeneficiaryController = {
       Anexo,
       Estado_idEstado,
       Estrato_idEstrato,
+      Sexo_idSexo,  // Nuevo campo para sexo
     } = req.body;
-
+  
     const idAdministrador = req.user.id; // ID del administrador activo (extraído del middleware de autenticación)
-
+  
     // Validar campos obligatorios
     if (
       !Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento ||
@@ -40,19 +42,19 @@ const registerBeneficiaryController = {
     ) {
       return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
     }
-
+  
     try {
-      // Verificar si el NumeroDocumento ya está registrado (independientemente del estado)
+      // Verificar si el NumeroDocumento ya está registrado
       const existingBeneficiary = await Beneficiario.findOne({
         where: { NumeroDocumento },  // Buscamos un beneficiario con el mismo número de documento
       });
-
+  
       if (existingBeneficiary) {
         return res.status(400).json({
           message: 'El Número de Documento ya está registrado con otro beneficiario.',
         });
       }
-
+  
       // Insertar el beneficiario en la base de datos
       const newBeneficiary = await Beneficiario.create({
         Nombre,
@@ -73,9 +75,10 @@ const registerBeneficiaryController = {
         Anexo: Anexo || null,         // Campo opcional
         Estado_idEstado,
         Estrato_idEstrato,
+        Sexo_idSexo, // Asignar el sexo aquí
         Administrador_idAdministrador: idAdministrador,
       });
-
+  
       // Registrar el cambio en HistorialCambio
       await HistorialCambio.create({
         Accion: 'Creación',
@@ -84,7 +87,7 @@ const registerBeneficiaryController = {
         Administrador_idAdministrador: idAdministrador,
         Beneficiario_idBeneficiario: newBeneficiary.idBeneficiario,
       });
-
+  
       res.status(201).json({
         message: 'Beneficiario registrado exitosamente',
         newBeneficiaryId: newBeneficiary.idBeneficiario,  // ID del beneficiario recién registrado
@@ -123,13 +126,18 @@ const registerBeneficiaryController = {
             attributes: ['idAdministrador', 'Nombre', 'Apellido'],
             as: 'administrador',
           },
+          {
+            model: Sexo,  // Asegúrate de incluir Sexo
+            attributes: ['Sexo'],
+            as: 'sexo',
+          },
         ],
       });
-
+  
       if (beneficiaries.length === 0) {
         return res.status(404).json({ message: 'No se encontraron beneficiarios' });
       }
-
+  
       const formattedBeneficiaries = beneficiaries.map(beneficiary => ({
         idBeneficiario: beneficiary.idBeneficiario,
         Nombre: beneficiary.Nombre,
@@ -150,6 +158,7 @@ const registerBeneficiaryController = {
         Barrio: beneficiary.Barrio,
         Anexo: beneficiary.Anexo,
         Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Sexo: beneficiary.sexo ? beneficiary.sexo.Sexo : null, // Incluir el sexo aquí
         Administrador: {
           idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
@@ -158,7 +167,7 @@ const registerBeneficiaryController = {
         CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
         UpdatedAt: beneficiary.updatedAt,// Incluyendo la fecha de actualización
       }));
-
+  
       res.status(200).json({
         message: 'Lista de beneficiarios obtenida exitosamente',
         data: formattedBeneficiaries,
@@ -175,7 +184,7 @@ const registerBeneficiaryController = {
   // Obtener un beneficiario por su ID
   async getBeneficiaryById(req, res) {
     const { id } = req.params;
-
+  
     try {
       const beneficiary = await Beneficiario.findByPk(id, {
         include: [
@@ -199,13 +208,18 @@ const registerBeneficiaryController = {
             attributes: ['idAdministrador', 'Nombre', 'Apellido'],
             as: 'administrador',
           },
+          {
+            model: Sexo,  // Asegúrate de incluir Sexo
+            attributes: ['Sexo'],
+            as: 'sexo',
+          },
         ],
       });
-
+  
       if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
-
+  
       const formattedBeneficiary = {
         idBeneficiario: beneficiary.idBeneficiario,
         Nombre: beneficiary.Nombre,
@@ -226,23 +240,24 @@ const registerBeneficiaryController = {
         Barrio: beneficiary.Barrio,
         Anexo: beneficiary.Anexo,
         Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Sexo: beneficiary.sexo ? beneficiary.sexo.Sexo : null, // Incluir el sexo aquí
         Administrador: {
           idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
           Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
         },
-        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
-        UpdatedAt: beneficiary.updatedAt, // Incluyendo la fecha de actualización
+        CreatedAt: beneficiary.createdAt,
+        UpdatedAt: beneficiary.updatedAt,
       };
-
+  
       res.status(200).json({
-        message: 'Beneficiario encontrado exitosamente',
+        message: 'Beneficiario encontrado',
         data: formattedBeneficiary,
       });
     } catch (err) {
-      console.error('Error al obtener el beneficiario por ID:', err);
+      console.error('Error al obtener el beneficiario:', err);
       res.status(500).json({
-        message: 'Error al obtener el beneficiario por ID',
+        message: 'Error al obtener el beneficiario',
         error: err.message,
       });
     }
@@ -251,7 +266,7 @@ const registerBeneficiaryController = {
   // Obtener un beneficiario por su número de documento
   async getBeneficiaryByNumeroDocumento(req, res) {
     const { numeroDocumento } = req.params;
-
+  
     try {
       const beneficiary = await Beneficiario.findOne({
         where: { NumeroDocumento: numeroDocumento },
@@ -276,13 +291,18 @@ const registerBeneficiaryController = {
             attributes: ['idAdministrador', 'Nombre', 'Apellido'],
             as: 'administrador',
           },
+          {
+            model: Sexo,  // Asegúrate de incluir el modelo Sexo
+            attributes: ['Sexo'],
+            as: 'sexo',  // Alias para la relación
+          },
         ],
       });
-
+  
       if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
-
+  
       const formattedBeneficiary = {
         idBeneficiario: beneficiary.idBeneficiario,
         Nombre: beneficiary.Nombre,
@@ -303,6 +323,7 @@ const registerBeneficiaryController = {
         Barrio: beneficiary.Barrio,
         Anexo: beneficiary.Anexo,
         Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
+        Sexo: beneficiary.sexo ? beneficiary.sexo.Sexo : null,  // Incluir el sexo aquí
         Administrador: {
           idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
@@ -311,7 +332,7 @@ const registerBeneficiaryController = {
         CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
         UpdatedAt: beneficiary.updatedAt, // Incluyendo la fecha de actualización
       };
-
+  
       res.status(200).json({
         message: 'Beneficiario encontrado exitosamente',
         data: formattedBeneficiary,
@@ -324,9 +345,10 @@ const registerBeneficiaryController = {
       });
     }
   },
+
   // Actualizar un beneficiario
   async updateBeneficiary(req, res) {
-    const { id } = req.params; // ID del beneficiario a actualizar
+    const { id } = req.params;
     const {
       Nombre,
       Apellido,
@@ -346,65 +368,79 @@ const registerBeneficiaryController = {
       Anexo,
       Estado_idEstado,
       Estrato_idEstrato,
+      Sexo_idSexo, // Nuevo campo para sexo
     } = req.body;
-
+  
+    const idAdministrador = req.user.id; // ID del administrador activo (extraído del middleware de autenticación)
+  
     try {
-      // Verificar si el beneficiario existe
-      const existingBeneficiary = await Beneficiario.findByPk(id);
-
-      if (!existingBeneficiary) {
+      // Buscar el beneficiario
+      const beneficiary = await Beneficiario.findByPk(id);
+  
+      if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
-
-      // Verificar si el NumeroDocumento ya está registrado con otro beneficiario
-      const duplicateBeneficiary = await Beneficiario.findOne({
-        where: {
-          NumeroDocumento,
-          idBeneficiario: { [Op.ne]: id }, // Excluir al beneficiario actual
-        },
-      });
-
-      if (duplicateBeneficiary) {
-        return res.status(400).json({
-          message: 'El Número de Documento ya está registrado con otro beneficiario.',
-        });
-      }
-
-      // Registrar los cambios en el HistorialCambio
-      const previousData = JSON.stringify(existingBeneficiary);
-
-      // Actualizar los datos del beneficiario
-      await existingBeneficiary.update({
-        Nombre: Nombre || existingBeneficiary.Nombre,
-        Apellido: Apellido || existingBeneficiary.Apellido,
-        TipoDocumento_idTipoDocumento: TipoDocumento_idTipoDocumento || existingBeneficiary.TipoDocumento_idTipoDocumento,
-        NumeroDocumento: NumeroDocumento || existingBeneficiary.NumeroDocumento,
-        Telefono: Telefono || existingBeneficiary.Telefono,
-        Celular: Celular || existingBeneficiary.Celular,
-        Correo: Correo || existingBeneficiary.Correo,
-        FechaInicio: FechaInicio || existingBeneficiary.FechaInicio,
-        FechaFin: FechaFin || existingBeneficiary.FechaFin,
-        CodigoDaneDpmto: CodigoDaneDpmto || existingBeneficiary.CodigoDaneDpmto,
-        CodigoDaneMunicipio: CodigoDaneMunicipio || existingBeneficiary.CodigoDaneMunicipio,
-        Departamento: Departamento || existingBeneficiary.Departamento,
-        Municipio: Municipio || existingBeneficiary.Municipio,
-        Direccion: Direccion || existingBeneficiary.Direccion,
-        Barrio: Barrio || existingBeneficiary.Barrio,
-        Anexo: Anexo || existingBeneficiary.Anexo,
-        Estado_idEstado: Estado_idEstado || existingBeneficiary.Estado_idEstado,
-        Estrato_idEstrato: Estrato_idEstrato || existingBeneficiary.Estrato_idEstrato,
-      });
-
+  
+      // Registrar los valores anteriores para el historial
+      const previousValues = {
+        Nombre: beneficiary.Nombre,
+        Apellido: beneficiary.Apellido,
+        TipoDocumento_idTipoDocumento: beneficiary.TipoDocumento_idTipoDocumento,
+        NumeroDocumento: beneficiary.NumeroDocumento,
+        Telefono: beneficiary.Telefono,
+        Celular: beneficiary.Celular,
+        Correo: beneficiary.Correo,
+        FechaInicio: beneficiary.FechaInicio,
+        FechaFin: beneficiary.FechaFin,
+        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
+        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
+        Departamento: beneficiary.Departamento,
+        Municipio: beneficiary.Municipio,
+        Direccion: beneficiary.Direccion,
+        Barrio: beneficiary.Barrio,
+        Anexo: beneficiary.Anexo,
+        Estado_idEstado: beneficiary.Estado_idEstado,
+        Estrato_idEstrato: beneficiary.Estrato_idEstrato,
+        Sexo_idSexo: beneficiary.Sexo_idSexo,
+      };
+  
+      // Actualizar el beneficiario
+      beneficiary.Nombre = Nombre || beneficiary.Nombre;
+      beneficiary.Apellido = Apellido || beneficiary.Apellido;
+      beneficiary.TipoDocumento_idTipoDocumento = TipoDocumento_idTipoDocumento || beneficiary.TipoDocumento_idTipoDocumento;
+      beneficiary.NumeroDocumento = NumeroDocumento || beneficiary.NumeroDocumento;
+      beneficiary.Telefono = Telefono || beneficiary.Telefono;
+      beneficiary.Celular = Celular || beneficiary.Celular;
+      beneficiary.Correo = Correo || beneficiary.Correo;
+      beneficiary.FechaInicio = FechaInicio || beneficiary.FechaInicio;
+      beneficiary.FechaFin = FechaFin || beneficiary.FechaFin;
+      beneficiary.CodigoDaneDpmto = CodigoDaneDpmto || beneficiary.CodigoDaneDpmto;
+      beneficiary.CodigoDaneMunicipio = CodigoDaneMunicipio || beneficiary.CodigoDaneMunicipio;
+      beneficiary.Departamento = Departamento || beneficiary.Departamento;
+      beneficiary.Municipio = Municipio || beneficiary.Municipio;
+      beneficiary.Direccion = Direccion || beneficiary.Direccion;
+      beneficiary.Barrio = Barrio || beneficiary.Barrio;
+      beneficiary.Anexo = Anexo || beneficiary.Anexo;
+      beneficiary.Estado_idEstado = Estado_idEstado || beneficiary.Estado_idEstado;
+      beneficiary.Estrato_idEstrato = Estrato_idEstrato || beneficiary.Estrato_idEstrato;
+      beneficiary.Sexo_idSexo = Sexo_idSexo || beneficiary.Sexo_idSexo;  // Actualizar el sexo aquí
+  
+      // Guardar cambios
+      await beneficiary.save();
+  
       // Registrar el cambio en HistorialCambio
       await HistorialCambio.create({
         Accion: 'Actualización',
-        ValorAnterior: previousData,
-        ValorNuevo: JSON.stringify(existingBeneficiary),
-        Administrador_idAdministrador: req.user.id,
-        Beneficiario_idBeneficiario: existingBeneficiary.idBeneficiario,
+        ValorAnterior: JSON.stringify(previousValues),
+        ValorNuevo: JSON.stringify(beneficiary),
+        Administrador_idAdministrador: idAdministrador,
+        Beneficiario_idBeneficiario: beneficiary.idBeneficiario,
       });
-
-      res.status(200).json({ message: 'Beneficiario actualizado exitosamente' });
+  
+      res.status(200).json({
+        message: 'Beneficiario actualizado exitosamente',
+        updatedBeneficiaryId: beneficiary.idBeneficiario,
+      });
     } catch (err) {
       console.error('Error al actualizar el beneficiario:', err);
       res.status(500).json({
@@ -416,59 +452,39 @@ const registerBeneficiaryController = {
 
   // Eliminar un beneficiario
   async deleteBeneficiary(req, res) {
-    const { id } = req.params;
+  const { id } = req.params;
+  const idAdministrador = req.user.id; // ID del administrador activo (extraído del middleware de autenticación)
 
-    try {
-      const existingBeneficiary = await Beneficiario.findByPk(id, {
-        include: [
-          {
-            model: Estado,
-            attributes: ['Estado'],
-            as: 'estado',
-          },
-          {
-            model: Estrato,
-            attributes: ['Estrato'],
-            as: 'estrato',
-          },
-          {
-            model: TipoDocumento,
-            attributes: ['TipoDocumento'],
-            as: 'tipoDocumento',
-          },
-          {
-            model: Administrador,
-            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
-            as: 'administrador',
-          },
-        ],
-      });
+  try {
+    const beneficiary = await Beneficiario.findByPk(id);
 
-      if (!existingBeneficiary) {
-        return res.status(404).json({ message: 'Beneficiario no encontrado' });
-      }
-
-      // Registrar el cambio en HistorialCambio antes de eliminar
-      await HistorialCambio.create({
-        Accion: 'Eliminación',
-        ValorAnterior: JSON.stringify(existingBeneficiary),
-        ValorNuevo: 'N/A',
-        Administrador_idAdministrador: req.user.id,
-        Beneficiario_idBeneficiario: existingBeneficiary.idBeneficiario,
-      });
-
-      // Eliminar el beneficiario
-      await existingBeneficiary.destroy();
-
-      res.status(200).json({ message: 'Beneficiario eliminado exitosamente' });
-    } catch (err) {
-      console.error('Error al eliminar el beneficiario:', err);
-      res.status(500).json({
-        message: 'Error al eliminar el beneficiario',
-        error: err.message,
-      });
+    if (!beneficiary) {
+      return res.status(404).json({ message: 'Beneficiario no encontrado' });
     }
-  },
+
+    // Registrar el cambio en HistorialCambio antes de eliminar
+    await HistorialCambio.create({
+      Accion: 'Eliminación',
+      ValorAnterior: JSON.stringify(beneficiary), // Guardamos los datos del beneficiario antes de eliminarlo
+      ValorNuevo: 'N/A', // En la eliminación, no hay nuevo valor
+      Administrador_idAdministrador: idAdministrador,
+      Beneficiario_idBeneficiario: beneficiary.idBeneficiario,
+    });
+
+    // Eliminar el beneficiario
+    await beneficiary.destroy();
+
+    res.status(200).json({
+      message: 'Beneficiario eliminado exitosamente',
+    });
+  } catch (err) {
+    console.error('Error al eliminar el beneficiario:', err);
+    res.status(500).json({
+      message: 'Error al eliminar el beneficiario',
+      error: err.message,
+    });
+  }
+},
 };
 
 module.exports = registerBeneficiaryController;

@@ -3,6 +3,7 @@ const sequelize = require('../config/db');
 const Role = require('./Role');
 const Estado = require('./Estado');
 const TipoDocumento = require('./TipoDocumento'); // Importar el modelo TipoDocumento
+const Sexo = require('../models/Sexo');
 
 const Administrador = sequelize.define('Administrador', {
   idAdministrador: {
@@ -51,6 +52,10 @@ const Administrador = sequelize.define('Administrador', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  Sexo_idSexo: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 }, {
   tableName: 'administrador',
   timestamps: true,
@@ -63,6 +68,10 @@ Administrador.belongsTo(TipoDocumento, { foreignKey: 'TipoDocumento_idTipoDocume
 Administrador.belongsTo(Administrador, {
   as: 'AdministradorCreado', // Alias para diferenciar la relación
   foreignKey: 'Administrador_idAdministrador' // Campo de la clave foránea
+});
+Administrador.belongsTo(Sexo, {
+  as: 'SexoCreado', // Alias para diferenciar la relación
+  foreignKey: 'Sexo_idSexo' // Campo de la clave foránea
 });
 
 Administrador.associate = (models) => {

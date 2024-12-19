@@ -4,6 +4,7 @@ const Estado = require('../models/Estado');
 const Estrato = require('../models/Estrato');
 const TipoDocumento = require('../models/TipoDocumento');
 const Administrador = require('../models/Administrador');
+const Sexo = require('../models/Sexo');
 
 const Beneficiario = sequelize.define('Beneficiario', {
   idBeneficiario: {  // Definimos la clave primaria como 'idBeneficiario'
@@ -88,6 +89,10 @@ const Beneficiario = sequelize.define('Beneficiario', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  Sexo_idSexo: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
 }, {
   tableName: 'beneficiario',
   timestamps: true, // Esto habilita `createdAt` y `updatedAt` automáticamente
@@ -120,5 +125,12 @@ Beneficiario.belongsTo(Administrador, {
   targetKey: 'idAdministrador',
   as: 'administrador', // Alias para la relación con Estrato
 });
+
+Beneficiario.belongsTo(Sexo, {
+  foreignKey: 'Sexo_idSexo',
+  targetKey: 'idSexo',
+  as: 'sexo', // Alias para la relación con Estrato
+});
+
 
 module.exports = { Beneficiario };

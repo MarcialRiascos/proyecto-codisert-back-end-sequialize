@@ -13,7 +13,7 @@ const TipoDocumento = sequelize.define('TipoDocumento', {
     allowNull: false
   }
 }, {
-  tableName: 'TipoDocumento',  // El nombre de la tabla en la base de datos
+  tableName: 'tipodocumento',  // El nombre de la tabla en la base de datos
   timestamps: true           // Desactivar los campos `createdAt` y `updatedAt`
 
 });
