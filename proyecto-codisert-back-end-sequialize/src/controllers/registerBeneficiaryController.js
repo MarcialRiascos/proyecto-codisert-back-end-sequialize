@@ -18,8 +18,9 @@ const registerBeneficiaryController = {
       Telefono,
       Celular,
       Correo,
-      FechaInicio,
-      FechaFin,
+      FechaNacimiento,  // Nuevo campo para fecha de nacimiento
+      FechaInicio,      // Campo actualizado a tipo DATE
+      FechaFin,         // Campo actualizado a tipo DATE
       CodigoDaneDpmto,
       CodigoDaneMunicipio,
       Departamento,
@@ -31,9 +32,9 @@ const registerBeneficiaryController = {
       Estrato_idEstrato,
       Sexo_idSexo,  // Nuevo campo para sexo
     } = req.body;
-  
+
     const idAdministrador = req.user.id; // ID del administrador activo (extraído del middleware de autenticación)
-  
+
     // Validar campos obligatorios
     if (
       !Nombre || !Apellido || !TipoDocumento_idTipoDocumento || !NumeroDocumento ||
@@ -42,19 +43,19 @@ const registerBeneficiaryController = {
     ) {
       return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
     }
-  
+
     try {
       // Verificar si el NumeroDocumento ya está registrado
       const existingBeneficiary = await Beneficiario.findOne({
         where: { NumeroDocumento },  // Buscamos un beneficiario con el mismo número de documento
       });
-  
+
       if (existingBeneficiary) {
         return res.status(400).json({
           message: 'El Número de Documento ya está registrado con otro beneficiario.',
         });
       }
-  
+
       // Insertar el beneficiario en la base de datos
       const newBeneficiary = await Beneficiario.create({
         Nombre,
@@ -64,6 +65,7 @@ const registerBeneficiaryController = {
         Telefono: Telefono || null,  // Campo opcional
         Celular: Celular || null,    // Campo opcional
         Correo,
+        FechaNacimiento,  // Asignar fecha de nacimiento aquí
         FechaInicio,
         FechaFin: FechaFin || null,  // Campo opcional
         CodigoDaneDpmto,
@@ -78,7 +80,7 @@ const registerBeneficiaryController = {
         Sexo_idSexo, // Asignar el sexo aquí
         Administrador_idAdministrador: idAdministrador,
       });
-  
+
       // Registrar el cambio en HistorialCambio
       await HistorialCambio.create({
         Accion: 'Creación',
@@ -87,7 +89,7 @@ const registerBeneficiaryController = {
         Administrador_idAdministrador: idAdministrador,
         Beneficiario_idBeneficiario: newBeneficiary.idBeneficiario,
       });
-  
+
       res.status(201).json({
         message: 'Beneficiario registrado exitosamente',
         newBeneficiaryId: newBeneficiary.idBeneficiario,  // ID del beneficiario recién registrado
@@ -133,11 +135,11 @@ const registerBeneficiaryController = {
           },
         ],
       });
-  
+
       if (beneficiaries.length === 0) {
         return res.status(404).json({ message: 'No se encontraron beneficiarios' });
       }
-  
+
       const formattedBeneficiaries = beneficiaries.map(beneficiary => ({
         idBeneficiario: beneficiary.idBeneficiario,
         Nombre: beneficiary.Nombre,
@@ -148,6 +150,7 @@ const registerBeneficiaryController = {
         Celular: beneficiary.Celular,
         Correo: beneficiary.Correo,
         Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaNacimiento: beneficiary.FechaNacimiento,  // Incluir la fecha de nacimiento
         FechaInicio: beneficiary.FechaInicio,
         FechaFin: beneficiary.FechaFin,
         CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
@@ -167,7 +170,7 @@ const registerBeneficiaryController = {
         CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
         UpdatedAt: beneficiary.updatedAt,// Incluyendo la fecha de actualización
       }));
-  
+
       res.status(200).json({
         message: 'Lista de beneficiarios obtenida exitosamente',
         data: formattedBeneficiaries,
@@ -184,7 +187,7 @@ const registerBeneficiaryController = {
   // Obtener un beneficiario por su ID
   async getBeneficiaryById(req, res) {
     const { id } = req.params;
-  
+
     try {
       const beneficiary = await Beneficiario.findByPk(id, {
         include: [
@@ -215,11 +218,11 @@ const registerBeneficiaryController = {
           },
         ],
       });
-  
+
       if (!beneficiary) {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
-  
+
       const formattedBeneficiary = {
         idBeneficiario: beneficiary.idBeneficiario,
         Nombre: beneficiary.Nombre,
@@ -230,6 +233,7 @@ const registerBeneficiaryController = {
         Celular: beneficiary.Celular,
         Correo: beneficiary.Correo,
         Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaNacimiento: beneficiary.FechaNacimiento, // Incluir fecha de nacimiento
         FechaInicio: beneficiary.FechaInicio,
         FechaFin: beneficiary.FechaFin,
         CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
@@ -249,7 +253,7 @@ const registerBeneficiaryController = {
         CreatedAt: beneficiary.createdAt,
         UpdatedAt: beneficiary.updatedAt,
       };
-  
+
       res.status(200).json({
         message: 'Beneficiario encontrado',
         data: formattedBeneficiary,
@@ -313,6 +317,7 @@ const registerBeneficiaryController = {
         Celular: beneficiary.Celular,
         Correo: beneficiary.Correo,
         Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
+        FechaNacimiento: beneficiary.FechaNacimiento, // Incluir fecha de nacimiento
         FechaInicio: beneficiary.FechaInicio,
         FechaFin: beneficiary.FechaFin,
         CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
@@ -357,6 +362,7 @@ const registerBeneficiaryController = {
       Telefono,
       Celular,
       Correo,
+      FechaNacimiento,  // Agregar FechaNacimiento aquí
       FechaInicio,
       FechaFin,
       CodigoDaneDpmto,
@@ -381,6 +387,15 @@ const registerBeneficiaryController = {
         return res.status(404).json({ message: 'Beneficiario no encontrado' });
       }
   
+      // Verificar si el número de documento ya está registrado
+      const existingBeneficiary = await Beneficiario.findOne({
+        where: { NumeroDocumento: NumeroDocumento, idBeneficiario: { [Op.ne]: id } }, // Excluye el beneficiario actual
+      });
+  
+      if (existingBeneficiary) {
+        return res.status(400).json({ message: 'El número de documento ya está registrado' });
+      }
+  
       // Registrar los valores anteriores para el historial
       const previousValues = {
         Nombre: beneficiary.Nombre,
@@ -390,6 +405,7 @@ const registerBeneficiaryController = {
         Telefono: beneficiary.Telefono,
         Celular: beneficiary.Celular,
         Correo: beneficiary.Correo,
+        FechaNacimiento: beneficiary.FechaNacimiento,  // Incluir FechaNacimiento en el historial
         FechaInicio: beneficiary.FechaInicio,
         FechaFin: beneficiary.FechaFin,
         CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
@@ -412,6 +428,7 @@ const registerBeneficiaryController = {
       beneficiary.Telefono = Telefono || beneficiary.Telefono;
       beneficiary.Celular = Celular || beneficiary.Celular;
       beneficiary.Correo = Correo || beneficiary.Correo;
+      beneficiary.FechaNacimiento = FechaNacimiento || beneficiary.FechaNacimiento;  // Actualizar FechaNacimiento aquí
       beneficiary.FechaInicio = FechaInicio || beneficiary.FechaInicio;
       beneficiary.FechaFin = FechaFin || beneficiary.FechaFin;
       beneficiary.CodigoDaneDpmto = CodigoDaneDpmto || beneficiary.CodigoDaneDpmto;

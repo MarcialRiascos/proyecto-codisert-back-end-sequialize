@@ -11,11 +11,11 @@ module.exports = {
     ];
 
     // Insertar los datos en la tabla Sexo
-    await queryInterface.bulkInsert('Sexo', sexos, {});
+    await queryInterface.bulkInsert('sexo', sexos, {});
   },
 
   down: async (queryInterface, Sequelize) => {
     // Si necesitamos revertir el seed, podemos eliminar los registros insertados
-    await queryInterface.bulkDelete('Sexo', null, {});
+    await queryInterface.bulkDelete('sexo', null, {});
   }
 };

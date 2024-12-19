@@ -1,9 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
-const documentRoutes = require('./routes/documentRoutes'); // Importar la ruta de documentos
+const documentRoutes = require('./routes/documentRoutes'); 
+const registerAdminRoutes = require('./routes/registerAdminRoutes'); 
+const registerBeneficiaryRoutes = require('./routes/registerBeneficiaryRoutes'); 
+const estadoRoutes = require('./routes/estadoRoutes'); 
+const estratoRoutes = require('./routes/estratoRoutes'); 
+const historialCambioRoutes = require('./routes/historialCambioRoutes'); 
+const roleRoutes = require('./routes/roleRoutes'); 
+const sexoRoutes = require('./routes/sexoRoutes'); 
+const tipoDocumentoRoutes = require('./routes/tipoDocumentoRoutes'); 
 
 // Importa la conexión de Sequelize
 const sequelize = require('./config/db');
@@ -13,14 +22,29 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const corsOptions = {
+  origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
+  credentials: true, // Permitir envío de cookies o headers de autenticación
+};
+
 // Middleware
 app.use(bodyParser.json());
-app.use(cors());
-
+app.use(cors(corsOptions));
+app.use(cookieParser());
 // Rutas
 app.use('/auth', authRoutes);
-app.use('/protected', protectedRoutes);
-app.use('/document', documentRoutes); // Ruta para manejar la carga de documentos
+// app.use('/protected', protectedRoutes);
+app.use('/api/v1/document', documentRoutes); // Ruta para manejar la carga de documentos
+
+app.use('/api/v1/admin', registerAdminRoutes);
+app.use('/api/v1/beneficiary', registerBeneficiaryRoutes);
+app.use('/api/v1/state', estadoRoutes);
+app.use('/api/v1/stratum', estratoRoutes);
+app.use('/api/v1/change', historialCambioRoutes);
+app.use('/api/v1/role', roleRoutes);
+app.use('/api/v1/sex', sexoRoutes);
+app.use('/api/v1/document-type', tipoDocumentoRoutes);
+
 
 // Sincroniza la base de datos con Sequelize antes de iniciar el servidor
 sequelize.sync({ force: false }) // Usa { force: false } para evitar que elimine las tablas al reiniciar (solo usa { force: true } en desarrollo)

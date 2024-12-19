@@ -41,13 +41,17 @@ const Beneficiario = sequelize.define('Beneficiario', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  FechaNacimiento: {  // Agregado después del campo Correo
+    type: DataTypes.DATE,
+    allowNull: true,  // Permitimos que sea opcional
+  },
   FechaInicio: {
     type: DataTypes.DATE,
     allowNull: false,
   },
   FechaFin: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true,  // Permite que este campo sea nulo
   },
   CodigoDaneDpmto: {
     type: DataTypes.STRING,
@@ -98,39 +102,35 @@ const Beneficiario = sequelize.define('Beneficiario', {
   timestamps: true, // Esto habilita `createdAt` y `updatedAt` automáticamente
 });
 
-// Definimos las asociaciones, si es necesario
-
-// Relación con TipoDocumento (si existe)
-
+// Relación con otros modelos (sin cambios)
 Beneficiario.belongsTo(Estado, {
-  foreignKey: 'Estado_idEstado', // El nombre de la columna en el modelo Beneficiario
-  targetKey: 'idEstado',         // El nombre de la clave primaria en el modelo Estado
-  as: 'estado'                   // Alias para la relación (usado en el include)
+  foreignKey: 'Estado_idEstado',
+  targetKey: 'idEstado',
+  as: 'estado',
 });
 
 Beneficiario.belongsTo(Estrato, {
   foreignKey: 'Estrato_idEstrato',
   targetKey: 'idEstrato',
-  as: 'estrato', // Alias para la relación con Estrato
+  as: 'estrato',
 });
 
 Beneficiario.belongsTo(TipoDocumento, {
   foreignKey: 'TipoDocumento_idTipoDocumento',
   targetKey: 'idTipoDocumento',
-  as: 'tipoDocumento', // Alias para la relación con Estrato
+  as: 'tipoDocumento',
 });
 
 Beneficiario.belongsTo(Administrador, {
   foreignKey: 'Administrador_idAdministrador',
   targetKey: 'idAdministrador',
-  as: 'administrador', // Alias para la relación con Estrato
+  as: 'administrador',
 });
 
 Beneficiario.belongsTo(Sexo, {
   foreignKey: 'Sexo_idSexo',
   targetKey: 'idSexo',
-  as: 'sexo', // Alias para la relación con Estrato
+  as: 'sexo',
 });
-
 
 module.exports = { Beneficiario };
