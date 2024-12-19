@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-12-2024 a las 01:01:01
+-- Tiempo de generación: 19-12-2024 a las 06:16:25
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -59,8 +59,9 @@ CREATE TABLE `beneficiario` (
   `Telefono` varchar(45) DEFAULT NULL,
   `Celular` varchar(45) DEFAULT NULL,
   `Correo` varchar(45) DEFAULT NULL,
-  `FechaInicio` varchar(45) NOT NULL,
-  `FechaFin` varchar(45) DEFAULT NULL,
+  `FechaNacimiento` date NOT NULL,
+  `FechaInicio` date NOT NULL,
+  `FechaFin` date DEFAULT NULL,
   `CodigoDaneDpmto` varchar(45) NOT NULL,
   `Departamento` varchar(45) NOT NULL,
   `CodigoDaneMunicipio` varchar(45) NOT NULL,
@@ -128,8 +129,8 @@ CREATE TABLE `estrato` (
 CREATE TABLE `historialcambio` (
   `idHistorialCambio` int(10) UNSIGNED NOT NULL,
   `Accion` varchar(45) NOT NULL,
-  `ValorAnterior` varchar(600) NOT NULL,
-  `ValorNuevo` varchar(600) DEFAULT NULL,
+  `ValorAnterior` varchar(700) NOT NULL,
+  `ValorNuevo` varchar(700) DEFAULT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
