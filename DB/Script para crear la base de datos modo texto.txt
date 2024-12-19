@@ -133,8 +133,9 @@ CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Beneficiario` (
   `Telefono` VARCHAR(45) NULL,
   `Celular` VARCHAR(45) NULL,
   `Correo` VARCHAR(45) NULL,
-  `FechaInicio` VARCHAR(45) NOT NULL,
-  `FechaFin` VARCHAR(45) NULL,
+  `FechaNacimiento` DATE NOT NULL,
+  `FechaInicio` DATE NOT NULL,
+  `FechaFin` DATE NULL,
   `CodigoDaneDpmto` VARCHAR(45) NOT NULL,
   `Departamento` VARCHAR(45) NOT NULL,
   `CodigoDaneMunicipio` VARCHAR(45) NOT NULL,
@@ -216,8 +217,8 @@ DROP TABLE IF EXISTS `proyecto_codisert`.`HistorialCambio` ;
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`HistorialCambio` (
   `idHistorialCambio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Accion` VARCHAR(45) NOT NULL,
-  `ValorAnterior` VARCHAR(600) NOT NULL,
-  `ValorNuevo` VARCHAR(600) NULL,
+  `ValorAnterior` VARCHAR(700) NOT NULL,
+  `ValorNuevo` VARCHAR(700) NULL,
   `Administrador_idAdministrador` INT UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idHistorialCambio`))

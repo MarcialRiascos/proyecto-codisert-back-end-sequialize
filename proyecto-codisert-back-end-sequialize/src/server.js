@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
-const protectedRoutes = require('./routes/protectedRoutes');
 const documentRoutes = require('./routes/documentRoutes'); 
 const registerAdminRoutes = require('./routes/registerAdminRoutes'); 
 const registerBeneficiaryRoutes = require('./routes/registerBeneficiaryRoutes'); 
@@ -33,7 +32,6 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 // Rutas
 app.use('/auth', authRoutes);
-// app.use('/protected', protectedRoutes);
 app.use('/api/v1/document', documentRoutes); // Ruta para manejar la carga de documentos
 
 app.use('/api/v1/admin', registerAdminRoutes);

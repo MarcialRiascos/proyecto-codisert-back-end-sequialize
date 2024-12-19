@@ -11,7 +11,7 @@ const router = express.Router();
 router.post('/upload', authAdminRegisMiddleware, upload.single('document'), uploadDocument);
 router.get('/search-alls', authAdminRegisLectMiddleware, UsarController.getAllDocuments);
 router.get('/search/:idDocumentos', authAdminRegisLectMiddleware, UsarController.getDocumentById);
-router.get('/search/beneficiary:idBeneficiario', authAdminRegisLectMiddleware, UsarController.getDocumentsByBeneficiary);
+router.get('/search/beneficiary/:idBeneficiario', authAdminRegisLectMiddleware, UsarController.getDocumentsByBeneficiary);
 router.delete('/delete/:idDocumentos', authAdminRegisMiddleware, UsarController.deleteDocument);
 
 module.exports = router;
