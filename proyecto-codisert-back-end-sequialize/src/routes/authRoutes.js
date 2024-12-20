@@ -13,6 +13,6 @@ router.post("/logout", (req, res) => {
       sameSite: "lax", // Establecer la misma sesión para todos los navegadores
     });
     res.status(200).json({ message: "Sesión cerrada correctamente" });
-});
+}); 
 
 module.exports = router;

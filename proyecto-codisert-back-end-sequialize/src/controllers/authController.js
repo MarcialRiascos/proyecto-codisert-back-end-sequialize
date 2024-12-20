@@ -39,11 +39,11 @@ const authController = {
         user: { id: user.idAdministrador, name: user.Nombre, email: user.Correo },
       });
 
-      res.cookie('token', token, {
+       res.cookie('token', token, {
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
-      });
+      }); 
       
     } catch (err) {
       res.status(500).json({ message: 'Error interno del servidor', error: err.message });
