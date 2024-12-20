@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = require('../config/db'); // Asegúrate de que esté apuntando a tu archivo de configuración de Sequelize
+const Administrador = require('../models/Administrador');
+const { Beneficiario } = require('../models/Beneficiario');
 
 const HistorialCambio = sequelize.define('HistorialCambio', {
   idHistorialCambio: {
@@ -32,6 +34,7 @@ const HistorialCambio = sequelize.define('HistorialCambio', {
   timestamps: true,  // Agrega las columnas createdAt y updatedAt automáticamente
 });
 
-
+HistorialCambio.belongsTo(Administrador, { foreignKey: 'Administrador_idAdministrador', as: 'administrador' });
+HistorialCambio.belongsTo(Beneficiario, { foreignKey: 'Beneficiario_idBeneficiario', as: 'beneficiario' });
 
 module.exports = { HistorialCambio };
