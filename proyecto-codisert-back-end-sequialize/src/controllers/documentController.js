@@ -9,20 +9,47 @@ const registerDocumentController = {
   // Función para cargar un documento
   async uploadDocument(req, res) {
     try {
+      const { idBeneficiario } = req.params;
       // Verificar que se haya cargado un archivo
-      if (!req.file) {
+
+      if (!req?.files) {
         return res.status(400).json({ message: 'No se ha cargado ningún archivo' });
       }
 
       // Verificar que los campos obligatorios estén presentes en el body de la solicitud
-      const { NombreDocumento, TipoDocumento, Beneficiario_idBeneficiario } = req.body;
-      if (!NombreDocumento || !TipoDocumento || !Beneficiario_idBeneficiario) {
-        return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
-      }
+      // const { NombreDocumento, TipoDocumento, Beneficiario_idBeneficiario } = req.body;
+      // if (!NombreDocumento || !TipoDocumento || !Beneficiario_idBeneficiario) {
+      //   return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
+      // }
 
       // Obtener el ID del administrador desde el usuario autenticado
       const Administrador_idAdministrador = req.user.id; // Esto viene del middleware de autenticación
 
+      const archivos = Object.getOwnPropertyNames(req.files).map(name => req.files[name][0]);
+
+      await Promise.all(
+        archivos.map(async file => {
+          // Insertar el documento en la base de datos con Sequelize
+          const documento = await Documento.create({
+            NombreDocumento: file.filename,
+            TipoDocumento: '',
+            Url: 'uploads/' + file.filename,
+            Beneficiario_idBeneficiario: idBeneficiario,  // Relación con el beneficiario
+            Administrador_idAdministrador, // Relacionado con el usuario autenticado
+          });
+
+          // Registrar el cambio en HistorialCambio
+          await HistorialCambio.create({
+            Accion: 'Creación',
+            ValorAnterior: 'N/A',
+            ValorNuevo: JSON.stringify(documento),
+            Administrador_idAdministrador,
+            Beneficiario_idBeneficiario: idBeneficiario,
+          });
+        })
+      );
+
+      /*
       // Ruta del archivo guardado
       const fileUrl = path.join('uploads', req.file.filename);
 
@@ -43,18 +70,20 @@ const registerDocumentController = {
         Administrador_idAdministrador,
         Beneficiario_idBeneficiario,
       });
+      */
 
       res.status(201).json({
         message: 'Documento cargado exitosamente',
-        document: {
-          id: documento.idDocumentos,
-          NombreDocumento,
-          TipoDocumento,
-          Url: fileUrl,
-          Beneficiario_idBeneficiario,
-          Administrador_idAdministrador,
-        }
+        // document: {
+        //   id: documento.idDocumentos,
+        //   NombreDocumento,
+        //   TipoDocumento,
+        //   Url: fileUrl,
+        //   Beneficiario_idBeneficiario,
+        //   Administrador_idAdministrador,
+        // }
       });
+
     } catch (err) {
       console.error('Error al cargar el documento:', err);
       res.status(500).json({ message: 'Error al cargar el documento', error: err.message });

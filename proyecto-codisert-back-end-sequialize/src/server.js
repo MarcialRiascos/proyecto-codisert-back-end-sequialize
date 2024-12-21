@@ -12,6 +12,8 @@ const historialCambioRoutes = require('./routes/historialCambioRoutes');
 const roleRoutes = require('./routes/roleRoutes'); 
 const sexoRoutes = require('./routes/sexoRoutes'); 
 const tipoDocumentoRoutes = require('./routes/tipoDocumentoRoutes'); 
+const morgan = require('morgan');
+const path = require('path');
 
 // Importa la conexión de Sequelize
 const sequelize = require('./config/db');
@@ -26,10 +28,15 @@ const corsOptions = {
   credentials: true, // Permitir envío de cookies o headers de autenticación
 };
 
+app.use(morgan('dev'));
 // Middleware
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
+
+
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Rutas
 app.use('/auth', authRoutes);
 app.use('/api/v1/document', documentRoutes); // Ruta para manejar la carga de documentos

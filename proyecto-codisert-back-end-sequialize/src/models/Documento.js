@@ -20,6 +20,11 @@ const Documento = sequelize.define('Documento', {
   Url: {
     type: DataTypes.STRING(255),
     allowNull: false,
+    get() {
+      const url = this.getDataValue('Url');  // Obtén el valor del campo 'url'
+      const host = process.env.HOST_URL || 'http://localhost:3000/';  // Usa la variable de entorno o un valor predeterminado
+      return url ? `${host}${url}` : null;  // Devuelve la URL completa
+    },
   },
   Beneficiario_idBeneficiario: {
     type: DataTypes.INTEGER,

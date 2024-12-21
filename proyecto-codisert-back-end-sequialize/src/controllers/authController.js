@@ -30,7 +30,13 @@ const authController = {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN }
       );
-
+      
+      res.cookie('token', token, {
+       httpOnly: true,
+       secure: true,
+       sameSite: 'lax',
+     }); 
+     
       //Enviar respuesta al frontend
       res.status(200).json({
         message: 'Inicio de sesión exitoso',
@@ -39,12 +45,6 @@ const authController = {
         user: { id: user.idAdministrador, name: user.Nombre, email: user.Correo },
       });
 
-       res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'lax',
-      }); 
-      
     } catch (err) {
       res.status(500).json({ message: 'Error interno del servidor', error: err.message });
     }
