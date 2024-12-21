@@ -6,36 +6,50 @@ const { Beneficiario } = require('../models/Beneficiario');
 const Administrador = require('../models/Administrador');
 
 const registerDocumentController = {
-  // Función para cargar un documento
   async uploadDocument(req, res) {
     try {
       const { idBeneficiario } = req.params;
+      
       // Verificar que se haya cargado un archivo
-
-      if (!req?.files) {
+      if (!req?.files || Object.keys(req.files).length === 0) {
         return res.status(400).json({ message: 'No se ha cargado ningún archivo' });
       }
 
-      // Verificar que los campos obligatorios estén presentes en el body de la solicitud
-      // const { NombreDocumento, TipoDocumento, Beneficiario_idBeneficiario } = req.body;
-      // if (!NombreDocumento || !TipoDocumento || !Beneficiario_idBeneficiario) {
-      //   return res.status(400).json({ message: 'Todos los campos obligatorios deben ser proporcionados' });
-      // }
-
       // Obtener el ID del administrador desde el usuario autenticado
-      const Administrador_idAdministrador = req.user.id; // Esto viene del middleware de autenticación
+      const Administrador_idAdministrador = req.user.id;
 
+      // Obtener todos los archivos cargados
       const archivos = Object.getOwnPropertyNames(req.files).map(name => req.files[name][0]);
 
+      // Validar y procesar los archivos cargados
       await Promise.all(
-        archivos.map(async file => {
-          // Insertar el documento en la base de datos con Sequelize
+        archivos.map(async (file) => {
+          const NombreDocumento = file.filename;
+          const TipoDocumento = req.body[`${file.fieldname}_TipoDocumento`]; // Obtener TipoDocumento desde req.body
+
+          // Validar que TipoDocumento no esté vacío
+          if (!TipoDocumento) {
+            return res.status(400).json({ message: `El tipo de documento para ${file.fieldname} es obligatorio.` });
+          }
+
+          // Aquí puedes agregar validaciones de tipo de archivo y tamaño si es necesario
+          const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'application/msword']; // Agregar los tipos permitidos
+          if (!allowedTypes.includes(file.mimetype)) {
+            return res.status(400).json({ message: `El archivo ${file.originalname} tiene un tipo no permitido.` });
+          }
+
+          const maxSize = 5 * 1024 * 1024; // 5MB
+          if (file.size > maxSize) {
+            return res.status(400).json({ message: `El archivo ${file.originalname} es demasiado grande. El límite es 5MB.` });
+          }
+
+          // Insertar el documento en la base de datos
           const documento = await Documento.create({
-            NombreDocumento: file.filename,
-            TipoDocumento: '',
+            NombreDocumento,
+            TipoDocumento,
             Url: 'uploads/' + file.filename,
-            Beneficiario_idBeneficiario: idBeneficiario,  // Relación con el beneficiario
-            Administrador_idAdministrador, // Relacionado con el usuario autenticado
+            Beneficiario_idBeneficiario: idBeneficiario,
+            Administrador_idAdministrador,
           });
 
           // Registrar el cambio en HistorialCambio
@@ -49,46 +63,15 @@ const registerDocumentController = {
         })
       );
 
-      /*
-      // Ruta del archivo guardado
-      const fileUrl = path.join('uploads', req.file.filename);
-
-      // Insertar el documento en la base de datos con Sequelize
-      const documento = await Documento.create({
-        NombreDocumento,
-        TipoDocumento,
-        Url: fileUrl,
-        Beneficiario_idBeneficiario,  // Relación con el beneficiario
-        Administrador_idAdministrador, // Relacionado con el usuario autenticado
-      });
-
-      // Registrar el cambio en HistorialCambio
-      await HistorialCambio.create({
-        Accion: 'Creación',
-        ValorAnterior: 'N/A',
-        ValorNuevo: JSON.stringify(documento),
-        Administrador_idAdministrador,
-        Beneficiario_idBeneficiario,
-      });
-      */
-
-      res.status(201).json({
-        message: 'Documento cargado exitosamente',
-        // document: {
-        //   id: documento.idDocumentos,
-        //   NombreDocumento,
-        //   TipoDocumento,
-        //   Url: fileUrl,
-        //   Beneficiario_idBeneficiario,
-        //   Administrador_idAdministrador,
-        // }
-      });
-
-    } catch (err) {
-      console.error('Error al cargar el documento:', err);
-      res.status(500).json({ message: 'Error al cargar el documento', error: err.message });
+      // Si todo fue bien, respondemos con éxito
+      res.status(200).json({ message: 'Archivos cargados y documentos registrados correctamente.' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al procesar los archivos. Intenta nuevamente más tarde.' });
     }
   },
+
+
 
   // Función para obtener todos los documentos
   async getAllDocuments(req, res) {

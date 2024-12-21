@@ -145,9 +145,11 @@ export const uploadDocumentsSchema = z.object({
                 .string()
                 .trim()
                 .min(1, 'El nombre del archivo es obligatorio'),
+            // Agregamos el campo TipoDocumento
+            TipoDocumento: z.string().optional(),  // Tipo de documento, puede ser opcional
         })
     )
-})
+});
 
 export const adminSchema = z.object({
     Nombre: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),

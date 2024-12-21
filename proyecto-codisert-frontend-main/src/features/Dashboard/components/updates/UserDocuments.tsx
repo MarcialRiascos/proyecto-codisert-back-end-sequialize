@@ -19,26 +19,32 @@ const UserDocuments = ({ idUser }: Props) => {
                 {
                     NombreDocumento: 'contrato',
                     file: undefined,
+                    TipoDocumento: 'contrato',  // Agregar el campo TipoDocumento
                 },
                 {
                     NombreDocumento: 'dni',
                     file: undefined,
+                    TipoDocumento: 'dni',  // Agregar el campo TipoDocumento
                 },
                 {
                     NombreDocumento: 'declaracion',
                     file: undefined,
+                    TipoDocumento: 'declaracion',  // Agregar el campo TipoDocumento
                 },
                 {
                     NombreDocumento: 'fachada',
                     file: undefined,
+                    TipoDocumento: 'fachada',  // Agregar el campo TipoDocumento
                 },
                 {
                     NombreDocumento: 'test',
                     file: undefined,
+                    TipoDocumento: 'test',  // Agregar el campo TipoDocumento
                 },
                 {
                     NombreDocumento: 'serial',
                     file: undefined,
+                    TipoDocumento: 'serial',  // Agregar el campo TipoDocumento
                 },
             ],
         }
@@ -52,12 +58,19 @@ const UserDocuments = ({ idUser }: Props) => {
     const onSubmit = (data: UploadDocumentsSchema) => {
         console.log("Formulario enviado", data);
         const formData = new FormData();
-        data.documents.map(d=>{
-            formData.append(d.NombreDocumento, d.file);
+        data.documents.forEach(d => {
+            if (d.file) {
+                formData.append(d.NombreDocumento, d.file);
+            }
+           
+            if (d.TipoDocumento) {
+                formData.append(d.NombreDocumento + '_TipoDocumento', d.TipoDocumento);
+            }
         });
 
         postFiles("api/v1/document/upload/"+idUser, formData);
     }
+    
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -84,6 +97,24 @@ const UserDocuments = ({ idUser }: Props) => {
                                 </FormItem>
                             )}
                         />
+                        {/* Campo adicional para TipoDocumento */}
+                        <FormField
+                            control={form.control}
+                            name={`documents.${index}.TipoDocumento`}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Tipo de Documento</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder="Especifica el tipo de documento"
+                                            className='border-gray-500 dark:border-gray-800'
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
                 ))}
                 <div className='flex justify-end items-center'>
@@ -91,7 +122,7 @@ const UserDocuments = ({ idUser }: Props) => {
                 </div>
             </form>
         </Form>
-    )
-}
+    );
+};
 
 export default UserDocuments
