@@ -218,17 +218,17 @@ const registerBeneficiaryController = {
         include: [
           {
             model: Estado,
-            attributes: ['idEstado', 'Estado'],  // Incluimos el id
+            attributes: ['idEstado', 'Estado'],
             as: 'estado',
           },
           {
             model: Estrato,
-            attributes: ['idEstrato', 'Estrato'],  // Incluimos el id
+            attributes: ['idEstrato', 'Estrato'],
             as: 'estrato',
           },
           {
             model: TipoDocumento,
-            attributes: ['idTipoDocumento', 'TipoDocumento'],  // Incluimos el id
+            attributes: ['idTipoDocumento', 'TipoDocumento'],
             as: 'tipoDocumento',
           },
           {
@@ -238,8 +238,13 @@ const registerBeneficiaryController = {
           },
           {
             model: Sexo,
-            attributes: ['idSexo', 'Sexo'],  // Incluimos el id
+            attributes: ['idSexo', 'Sexo'],
             as: 'sexo',
+          },
+          {
+            model: Documento,  // Incluir los documentos relacionados
+            attributes: ['idDocumentos', 'NombreDocumento', 'TipoDocumento', 'Url'],
+            as: 'documentos',  // Alias de la relación
           },
         ],
       });
@@ -254,7 +259,7 @@ const registerBeneficiaryController = {
         Apellido: beneficiary.Apellido,
         TipoDocumento: beneficiary.tipoDocumento ? {
           id: beneficiary.tipoDocumento.idTipoDocumento,
-          nombre: beneficiary.tipoDocumento.TipoDocumento
+          nombre: beneficiary.tipoDocumento.TipoDocumento,
         } : null,
         NumeroDocumento: beneficiary.NumeroDocumento,
         Telefono: beneficiary.Telefono,
@@ -262,7 +267,7 @@ const registerBeneficiaryController = {
         Correo: beneficiary.Correo,
         Estrato: beneficiary.estrato ? {
           id: beneficiary.estrato.idEstrato,
-          nombre: beneficiary.estrato.Estrato
+          nombre: beneficiary.estrato.Estrato,
         } : null,
         FechaNacimiento: beneficiary.FechaNacimiento,
         FechaInicio: beneficiary.FechaInicio,
@@ -276,11 +281,11 @@ const registerBeneficiaryController = {
         Anexo: beneficiary.Anexo,
         Estado: beneficiary.estado ? {
           id: beneficiary.estado.idEstado,
-          nombre: beneficiary.estado.Estado
+          nombre: beneficiary.estado.Estado,
         } : null,
         Sexo: beneficiary.sexo ? {
           id: beneficiary.sexo.idSexo,
-          nombre: beneficiary.sexo.Sexo
+          nombre: beneficiary.sexo.Sexo,
         } : null,
         Administrador: {
           idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
@@ -289,6 +294,13 @@ const registerBeneficiaryController = {
         },
         CreatedAt: beneficiary.createdAt,
         UpdatedAt: beneficiary.updatedAt,
+        // Aquí agregamos los documentos relacionados
+        Documentos: beneficiary.documentos.map(doc => ({
+          idDocumentos: doc.idDocumentos,
+          NombreDocumento: doc.NombreDocumento,
+          TipoDocumento: doc.TipoDocumento,
+          Url: doc.Url,
+        })),
       };
   
       res.status(200).json({
@@ -303,102 +315,114 @@ const registerBeneficiaryController = {
       });
     }
   },
-  
-  // Obtener un beneficiario por su número de documento
-  async getBeneficiaryByNumeroDocumento(req, res) {
-    const { numeroDocumento } = req.params;
-  
-    try {
-      const beneficiary = await Beneficiario.findOne({
-        where: { NumeroDocumento: numeroDocumento },
-        include: [
-          {
-            model: Estado,
-            attributes: ['idEstado', 'Estado'],  // Incluimos el id
-            as: 'estado',
-          },
-          {
-            model: Estrato,
-            attributes: ['idEstrato', 'Estrato'],  // Incluimos el id
-            as: 'estrato',
-          },
-          {
-            model: TipoDocumento,
-            attributes: ['idTipoDocumento', 'TipoDocumento'],  // Incluimos el id
-            as: 'tipoDocumento',
-          },
-          {
-            model: Administrador,
-            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
-            as: 'administrador',
-          },
-          {
-            model: Sexo,
-            attributes: ['idSexo', 'Sexo'],  // Incluimos el id
-            as: 'sexo',
-          },
-        ],
-      });
-  
-      if (!beneficiary) {
-        return res.status(404).json({ message: 'Beneficiario no encontrado' });
-      }
-  
-      const formattedBeneficiary = {
-        idBeneficiario: beneficiary.idBeneficiario,
-        Nombre: beneficiary.Nombre,
-        Apellido: beneficiary.Apellido,
-        TipoDocumento: beneficiary.tipoDocumento ? {
-          id: beneficiary.tipoDocumento.idTipoDocumento,
-          nombre: beneficiary.tipoDocumento.TipoDocumento
-        } : null,
-        NumeroDocumento: beneficiary.NumeroDocumento,
-        Telefono: beneficiary.Telefono,
-        Celular: beneficiary.Celular,
-        Correo: beneficiary.Correo,
-        Estrato: beneficiary.estrato ? {
-          id: beneficiary.estrato.idEstrato,
-          nombre: beneficiary.estrato.Estrato
-        } : null,
-        FechaNacimiento: beneficiary.FechaNacimiento,
-        FechaInicio: beneficiary.FechaInicio,
-        FechaFin: beneficiary.FechaFin,
-        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
-        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
-        Departamento: beneficiary.Departamento,
-        Municipio: beneficiary.Municipio,
-        Direccion: beneficiary.Direccion,
-        Barrio: beneficiary.Barrio,
-        Anexo: beneficiary.Anexo,
-        Estado: beneficiary.estado ? {
-          id: beneficiary.estado.idEstado,
-          nombre: beneficiary.estado.Estado
-        } : null,
-        Sexo: beneficiary.sexo ? {
-          id: beneficiary.sexo.idSexo,
-          nombre: beneficiary.sexo.Sexo
-        } : null,
-        Administrador: {
-          idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
-          Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
-          Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
+
+// Obtener un beneficiario por su número de documento
+async getBeneficiaryByNumeroDocumento(req, res) {
+  const { numeroDocumento } = req.params;
+
+  try {
+    const beneficiary = await Beneficiario.findOne({
+      where: { NumeroDocumento: numeroDocumento },
+      include: [
+        {
+          model: Estado,
+          attributes: ['idEstado', 'Estado'],
+          as: 'estado',
         },
-        CreatedAt: beneficiary.createdAt,
-        UpdatedAt: beneficiary.updatedAt,
-      };
-  
-      res.status(200).json({
-        message: 'Beneficiario encontrado exitosamente',
-        data: formattedBeneficiary,
-      });
-    } catch (err) {
-      console.error('Error al obtener el beneficiario por número de documento:', err);
-      res.status(500).json({
-        message: 'Error al obtener el beneficiario por número de documento',
-        error: err.message,
-      });
+        {
+          model: Estrato,
+          attributes: ['idEstrato', 'Estrato'],
+          as: 'estrato',
+        },
+        {
+          model: TipoDocumento,
+          attributes: ['idTipoDocumento', 'TipoDocumento'],
+          as: 'tipoDocumento',
+        },
+        {
+          model: Administrador,
+          attributes: ['idAdministrador', 'Nombre', 'Apellido'],
+          as: 'administrador',
+        },
+        {
+          model: Sexo,
+          attributes: ['idSexo', 'Sexo'],
+          as: 'sexo',
+        },
+        {
+          model: Documento,  // Incluir los documentos relacionados
+          attributes: ['idDocumentos', 'NombreDocumento', 'TipoDocumento', 'Url'],
+          as: 'documentos',  // Alias de la relación
+        },
+      ],
+    });
+
+    if (!beneficiary) {
+      return res.status(404).json({ message: 'Beneficiario no encontrado' });
     }
-  },
+
+    const formattedBeneficiary = {
+      idBeneficiario: beneficiary.idBeneficiario,
+      Nombre: beneficiary.Nombre,
+      Apellido: beneficiary.Apellido,
+      TipoDocumento: beneficiary.tipoDocumento ? {
+        id: beneficiary.tipoDocumento.idTipoDocumento,
+        nombre: beneficiary.tipoDocumento.TipoDocumento,
+      } : null,
+      NumeroDocumento: beneficiary.NumeroDocumento,
+      Telefono: beneficiary.Telefono,
+      Celular: beneficiary.Celular,
+      Correo: beneficiary.Correo,
+      Estrato: beneficiary.estrato ? {
+        id: beneficiary.estrato.idEstrato,
+        nombre: beneficiary.estrato.Estrato,
+      } : null,
+      FechaNacimiento: beneficiary.FechaNacimiento,
+      FechaInicio: beneficiary.FechaInicio,
+      FechaFin: beneficiary.FechaFin,
+      CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
+      CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
+      Departamento: beneficiary.Departamento,
+      Municipio: beneficiary.Municipio,
+      Direccion: beneficiary.Direccion,
+      Barrio: beneficiary.Barrio,
+      Anexo: beneficiary.Anexo,
+      Estado: beneficiary.estado ? {
+        id: beneficiary.estado.idEstado,
+        nombre: beneficiary.estado.Estado,
+      } : null,
+      Sexo: beneficiary.sexo ? {
+        id: beneficiary.sexo.idSexo,
+        nombre: beneficiary.sexo.Sexo,
+      } : null,
+      Administrador: {
+        idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
+        Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
+        Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
+      },
+      CreatedAt: beneficiary.createdAt,
+      UpdatedAt: beneficiary.updatedAt,
+      // Aquí agregamos los documentos relacionados
+      Documentos: beneficiary.documentos.map(doc => ({
+        idDocumentos: doc.idDocumentos,
+        NombreDocumento: doc.NombreDocumento,
+        TipoDocumento: doc.TipoDocumento,
+        Url: doc.Url,
+      })),
+    };
+
+    res.status(200).json({
+      message: 'Beneficiario encontrado exitosamente',
+      data: formattedBeneficiary,
+    });
+  } catch (err) {
+    console.error('Error al obtener el beneficiario por número de documento:', err);
+    res.status(500).json({
+      message: 'Error al obtener el beneficiario por número de documento',
+      error: err.message,
+    });
+  }
+},
 
   // Actualizar un beneficiario
   async updateBeneficiary(req, res) {
