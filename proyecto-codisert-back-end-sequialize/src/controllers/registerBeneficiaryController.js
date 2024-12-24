@@ -6,6 +6,7 @@ const Estrato = require('../models/Estrato');
 const TipoDocumento = require('../models/TipoDocumento');
 const Administrador = require('../models/Administrador');
 const Sexo = require('../models/Sexo'); // Modelo de Sexo
+const Documento = require('../models/Documento'); // Modelo de Sexo
 
 const registerBeneficiaryController = {
   // Registrar un beneficiario
@@ -110,87 +111,6 @@ const registerBeneficiaryController = {
         include: [
           {
             model: Estado,
-            attributes: ['Estado'],
-            as: 'estado',
-          },
-          {
-            model: Estrato,
-            attributes: ['Estrato'],
-            as: 'estrato',
-          },
-          {
-            model: TipoDocumento,
-            attributes: ['TipoDocumento'],
-            as: 'tipoDocumento',
-          },
-          {
-            model: Administrador,
-            attributes: ['idAdministrador', 'Nombre', 'Apellido'],
-            as: 'administrador',
-          },
-          {
-            model: Sexo,  // Asegúrate de incluir Sexo
-            attributes: ['Sexo'],
-            as: 'sexo',
-          },
-        ],
-      });
-
-      if (beneficiaries.length === 0) {
-        return res.status(404).json({ message: 'No se encontraron beneficiarios' });
-      }
-
-      const formattedBeneficiaries = beneficiaries.map(beneficiary => ({
-        idBeneficiario: beneficiary.idBeneficiario,
-        Nombre: beneficiary.Nombre,
-        Apellido: beneficiary.Apellido,
-        TipoDocumento: beneficiary.tipoDocumento ? beneficiary.tipoDocumento.TipoDocumento : null,
-        NumeroDocumento: beneficiary.NumeroDocumento,
-        Telefono: beneficiary.Telefono,
-        Celular: beneficiary.Celular,
-        Correo: beneficiary.Correo,
-        Estrato: beneficiary.estrato ? beneficiary.estrato.Estrato : null,
-        FechaNacimiento: beneficiary.FechaNacimiento,  // Incluir la fecha de nacimiento
-        FechaInicio: beneficiary.FechaInicio,
-        FechaFin: beneficiary.FechaFin,
-        CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
-        CodigoDaneMunicipio: beneficiary.CodigoDaneMunicipio,
-        Departamento: beneficiary.Departamento,
-        Municipio: beneficiary.Municipio,
-        Direccion: beneficiary.Direccion,
-        Barrio: beneficiary.Barrio,
-        Anexo: beneficiary.Anexo,
-        Estado: beneficiary.estado ? beneficiary.estado.Estado : null,
-        Sexo: beneficiary.sexo ? beneficiary.sexo.Sexo : null, // Incluir el sexo aquí
-        Administrador: {
-          idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
-          Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
-          Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
-        },
-        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
-        UpdatedAt: beneficiary.updatedAt,// Incluyendo la fecha de actualización
-      }));
-
-      res.status(200).json({
-        message: 'Lista de beneficiarios obtenida exitosamente',
-        data: formattedBeneficiaries,
-      });
-    } catch (err) {
-      console.error('Error al obtener la lista de beneficiarios:', err);
-      res.status(500).json({
-        message: 'Error al obtener la lista de beneficiarios',
-        error: err.message,
-      });
-    }
-  },
-
-  // Obtener un beneficiario por su ID
-  async getAllBeneficiaries(req, res) {
-    try {
-      const beneficiaries = await Beneficiario.findAll({
-        include: [
-          {
-            model: Estado,
             attributes: ['idEstado', 'Estado'],  // Incluimos el id
             as: 'estado',
           },
@@ -210,9 +130,14 @@ const registerBeneficiaryController = {
             as: 'administrador',
           },
           {
-            model: Sexo,  
+            model: Sexo,
             attributes: ['idSexo', 'Sexo'],  // Incluimos el id
             as: 'sexo',
+          },
+          {
+            model: Documento,  // Aquí incluimos los documentos relacionados
+            attributes: ['idDocumentos', 'NombreDocumento', 'TipoDocumento', 'Url'],  // Traemos los atributos de los documentos
+            as: 'documentos',  // Alias de la relación
           },
         ],
       });
@@ -237,7 +162,7 @@ const registerBeneficiaryController = {
           id: beneficiary.estrato.idEstrato,
           nombre: beneficiary.estrato.Estrato
         } : null,
-        FechaNacimiento: beneficiary.FechaNacimiento,  // Incluir la fecha de nacimiento
+        FechaNacimiento: beneficiary.FechaNacimiento,
         FechaInicio: beneficiary.FechaInicio,
         FechaFin: beneficiary.FechaFin,
         CodigoDaneDpmto: beneficiary.CodigoDaneDpmto,
@@ -254,14 +179,21 @@ const registerBeneficiaryController = {
         Sexo: beneficiary.sexo ? {
           id: beneficiary.sexo.idSexo,
           nombre: beneficiary.sexo.Sexo
-        } : null,  // Incluir el sexo aquí
+        } : null,
         Administrador: {
           idAdministrador: beneficiary.administrador ? beneficiary.administrador.idAdministrador : null,
           Nombre: beneficiary.administrador ? beneficiary.administrador.Nombre : null,
           Apellido: beneficiary.administrador ? beneficiary.administrador.Apellido : null,
         },
-        CreatedAt: beneficiary.createdAt, // Incluyendo la fecha de creación
-        UpdatedAt: beneficiary.updatedAt, // Incluyendo la fecha de actualización
+        CreatedAt: beneficiary.createdAt,
+        UpdatedAt: beneficiary.updatedAt,
+        // Aquí agregamos los documentos relacionados
+        Documentos: beneficiary.documentos.map(doc => ({
+          idDocumentos: doc.idDocumentos,
+          NombreDocumento: doc.NombreDocumento,
+          TipoDocumento: doc.TipoDocumento,
+          Url: doc.Url,
+        })),
       }));
   
       res.status(200).json({

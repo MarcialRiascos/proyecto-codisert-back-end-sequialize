@@ -5,12 +5,13 @@ const Estrato = require('../models/Estrato');
 const TipoDocumento = require('../models/TipoDocumento');
 const Administrador = require('../models/Administrador');
 const Sexo = require('../models/Sexo');
+const Documento = require('../models/Documento');  // Importar el modelo Documento
 
 const Beneficiario = sequelize.define('Beneficiario', {
-  idBeneficiario: {  // Definimos la clave primaria como 'idBeneficiario'
+  idBeneficiario: {
     type: DataTypes.INTEGER,
-    primaryKey: true,  // Especificamos que esta es la clave primaria
-    autoIncrement: true, // Hace que el valor se incremente automáticamente
+    primaryKey: true,
+    autoIncrement: true,
   },
   Nombre: {
     type: DataTypes.STRING,
@@ -27,7 +28,7 @@ const Beneficiario = sequelize.define('Beneficiario', {
   NumeroDocumento: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true, // Asegura que el número de documento sea único
+    unique: true,
   },
   Telefono: {
     type: DataTypes.STRING,
@@ -41,9 +42,9 @@ const Beneficiario = sequelize.define('Beneficiario', {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  FechaNacimiento: {  // Agregado después del campo Correo
+  FechaNacimiento: {
     type: DataTypes.DATE,
-    allowNull: true,  // Permitimos que sea opcional
+    allowNull: true,
   },
   FechaInicio: {
     type: DataTypes.DATE,
@@ -51,7 +52,7 @@ const Beneficiario = sequelize.define('Beneficiario', {
   },
   FechaFin: {
     type: DataTypes.DATE,
-    allowNull: true,  // Permite que este campo sea nulo
+    allowNull: true,
   },
   CodigoDaneDpmto: {
     type: DataTypes.STRING,
@@ -99,10 +100,10 @@ const Beneficiario = sequelize.define('Beneficiario', {
   },
 }, {
   tableName: 'beneficiario',
-  timestamps: true, // Esto habilita `createdAt` y `updatedAt` automáticamente
+  timestamps: true,
 });
 
-// Relación con otros modelos (sin cambios)
+// Relación con otros modelos
 Beneficiario.belongsTo(Estado, {
   foreignKey: 'Estado_idEstado',
   targetKey: 'idEstado',
@@ -132,5 +133,12 @@ Beneficiario.belongsTo(Sexo, {
   targetKey: 'idSexo',
   as: 'sexo',
 });
+
+
+// Beneficiario.hasMany(Documento, {
+//   foreignKey: 'Beneficiario_idBeneficiario',
+//   targetKey: 'idBeneficiario',
+//   as: 'documentos',
+// });
 
 module.exports = { Beneficiario };

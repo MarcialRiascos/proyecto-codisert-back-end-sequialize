@@ -17,6 +17,8 @@ const path = require('path');
 
 // Importa la conexión de Sequelize
 const sequelize = require('./config/db');
+const { Beneficiario } = require('./models/Beneficiario');
+const Documento = require('./models/Documento');
 
 require('dotenv').config();
 
@@ -50,6 +52,18 @@ app.use('/api/v1/role', roleRoutes);
 app.use('/api/v1/sex', sexoRoutes);
 app.use('/api/v1/document-type', tipoDocumentoRoutes);
 
+
+Beneficiario.hasMany(Documento, {
+  foreignKey: 'Beneficiario_idBeneficiario',
+  targetKey: 'idBeneficiario',
+  as: 'documentos',
+});
+
+Documento.belongsTo(Beneficiario, {
+  foreignKey: 'Beneficiario_idBeneficiario',  // Clave foránea en Documento
+  // targetKey: 'idBeneficiario',  // Clave primaria en Beneficiario
+  // as: 'beneficiario',  // Alias para la relación
+});
 
 // Sincroniza la base de datos con Sequelize antes de iniciar el servidor
 sequelize.sync({ force: false }) // Usa { force: false } para evitar que elimine las tablas al reiniciar (solo usa { force: true } en desarrollo)
