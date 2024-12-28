@@ -12,6 +12,9 @@ const historialCambioRoutes = require('./routes/historialCambioRoutes');
 const roleRoutes = require('./routes/roleRoutes'); 
 const sexoRoutes = require('./routes/sexoRoutes'); 
 const tipoDocumentoRoutes = require('./routes/tipoDocumentoRoutes'); 
+const viaRoutes = require('./routes/viaRoutes'); 
+const tipoUnidadRoutes = require('./routes/tipoUnidadRoutes'); 
+const barrioRoutes = require('./routes/barrioRoutes'); 
 const morgan = require('morgan');
 const path = require('path');
 
@@ -51,7 +54,9 @@ app.use('/api/v1/change', historialCambioRoutes);
 app.use('/api/v1/role', roleRoutes);
 app.use('/api/v1/sex', sexoRoutes);
 app.use('/api/v1/document-type', tipoDocumentoRoutes);
-
+app.use('/api/v1/via', viaRoutes);
+app.use('/api/v1/unit-type', tipoUnidadRoutes);
+app.use('/api/v1/neighborhood', barrioRoutes);
 
 Beneficiario.hasMany(Documento, {
   foreignKey: 'Beneficiario_idBeneficiario',

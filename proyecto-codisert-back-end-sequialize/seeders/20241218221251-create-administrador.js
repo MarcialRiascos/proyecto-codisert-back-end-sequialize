@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 module.exports = {
   async up (queryInterface, Sequelize) {
     // Encriptar la contraseña
-    const hashedPassword = await bcrypt.hash('1234567890', 10);
+    const hashedPassword = await bcrypt.hash('T10F8DA0', 10);
 
     // Insertar un administrador 'admin_super' con el campo Sexo
     await queryInterface.bulkInsert('administrador', [{

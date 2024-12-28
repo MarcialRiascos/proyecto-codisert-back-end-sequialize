@@ -224,6 +224,42 @@ CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`HistorialCambio` (
   PRIMARY KEY (`idHistorialCambio`))
 ENGINE = InnoDB;
 
+DROP TABLE IF EXISTS `proyecto_codisert`.`Via`;
+
+CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Via` (
+  `idVia` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Via` VARCHAR(45) NOT NULL,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idVia`)
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `proyecto_codisert`.`TipoUnidad`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_codisert`.`TipoUnidad`;
+
+CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`TipoUnidad` (
+  `idTipoUnidad` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `TipoUnidad` VARCHAR(45) NOT NULL,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idTipoUnidad`)
+) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `proyecto_codisert`.`Barrio`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_codisert`.`Barrio`;
+
+CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Barrio` (
+  `idBarrio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Barrio` VARCHAR(45) NOT NULL,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idBarrio`)
+) ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
