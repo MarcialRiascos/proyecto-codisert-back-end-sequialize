@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-12-2024 a las 06:16:25
+-- Tiempo de generación: 29-12-2024 a las 03:50:16
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,6 +40,19 @@ CREATE TABLE `administrador` (
   `Rol_idRol` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(11) DEFAULT NULL,
   `Sexo_idSexo` int(10) UNSIGNED NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `barrio`
+--
+
+CREATE TABLE `barrio` (
+  `idBarrio` int(10) UNSIGNED NOT NULL,
+  `Barrio` varchar(45) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -86,7 +99,7 @@ CREATE TABLE `beneficiario` (
 CREATE TABLE `documentos` (
   `idDocumentos` int(10) UNSIGNED NOT NULL,
   `NombreDocumento` varchar(45) NOT NULL,
-  `TipoDocumento` varchar(45) NOT NULL,
+  `TipoDocumento` varchar(255) NOT NULL,
   `Url` varchar(255) NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
@@ -123,14 +136,28 @@ CREATE TABLE `estrato` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `facturacion`
+--
+
+CREATE TABLE `facturacion` (
+  `idFacturacion` int(10) UNSIGNED NOT NULL,
+  `NombreDocumento` varchar(45) NOT NULL,
+  `Url` varchar(45) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `historialcambio`
 --
 
 CREATE TABLE `historialcambio` (
   `idHistorialCambio` int(10) UNSIGNED NOT NULL,
   `Accion` varchar(45) NOT NULL,
-  `ValorAnterior` varchar(700) NOT NULL,
-  `ValorNuevo` varchar(700) DEFAULT NULL,
+  `ValorAnterior` text NOT NULL,
+  `ValorNuevo` text DEFAULT NULL,
   `Administrador_idAdministrador` int(10) UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` int(10) UNSIGNED NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -176,6 +203,32 @@ CREATE TABLE `tipodocumento` (
   `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipounidad`
+--
+
+CREATE TABLE `tipounidad` (
+  `idTipoUnidad` int(10) UNSIGNED NOT NULL,
+  `TipoUnidad` varchar(45) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `via`
+--
+
+CREATE TABLE `via` (
+  `idVia` int(10) UNSIGNED NOT NULL,
+  `Via` varchar(45) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 --
 -- Índices para tablas volcadas
 --
@@ -190,6 +243,12 @@ ALTER TABLE `administrador`
   ADD KEY `fk_Administrador_Rol1_idx` (`Rol_idRol`),
   ADD KEY `fk_Administrador_TipoDocumento1_idx` (`TipoDocumento_idTipoDocumento`),
   ADD KEY `fk_Administrador_Sexo1_idx` (`Sexo_idSexo`);
+
+--
+-- Indices de la tabla `barrio`
+--
+ALTER TABLE `barrio`
+  ADD PRIMARY KEY (`idBarrio`);
 
 --
 -- Indices de la tabla `beneficiario`
@@ -223,6 +282,12 @@ ALTER TABLE `estrato`
   ADD PRIMARY KEY (`idEstrato`);
 
 --
+-- Indices de la tabla `facturacion`
+--
+ALTER TABLE `facturacion`
+  ADD PRIMARY KEY (`idFacturacion`);
+
+--
 -- Indices de la tabla `historialcambio`
 --
 ALTER TABLE `historialcambio`
@@ -247,6 +312,18 @@ ALTER TABLE `tipodocumento`
   ADD PRIMARY KEY (`idTipoDocumento`);
 
 --
+-- Indices de la tabla `tipounidad`
+--
+ALTER TABLE `tipounidad`
+  ADD PRIMARY KEY (`idTipoUnidad`);
+
+--
+-- Indices de la tabla `via`
+--
+ALTER TABLE `via`
+  ADD PRIMARY KEY (`idVia`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -255,6 +332,12 @@ ALTER TABLE `tipodocumento`
 --
 ALTER TABLE `administrador`
   MODIFY `idAdministrador` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `barrio`
+--
+ALTER TABLE `barrio`
+  MODIFY `idBarrio` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `beneficiario`
@@ -281,6 +364,12 @@ ALTER TABLE `estrato`
   MODIFY `idEstrato` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `facturacion`
+--
+ALTER TABLE `facturacion`
+  MODIFY `idFacturacion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `historialcambio`
 --
 ALTER TABLE `historialcambio`
@@ -303,6 +392,18 @@ ALTER TABLE `sexo`
 --
 ALTER TABLE `tipodocumento`
   MODIFY `idTipoDocumento` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tipounidad`
+--
+ALTER TABLE `tipounidad`
+  MODIFY `idTipoUnidad` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `via`
+--
+ALTER TABLE `via`
+  MODIFY `idVia` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas

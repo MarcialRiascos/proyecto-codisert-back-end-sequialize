@@ -233,24 +233,27 @@ const registerDocumentController = {
   async deleteDocument(req, res) {
     try {
       const { idDocumentos } = req.params;
-
+  
       // Buscar el documento para obtener la URL del archivo
       const documento = await Documento.findOne({ where: { idDocumentos } });
-
+  
       if (!documento) {
         return res.status(404).json({ message: 'Documento no encontrado' });
       }
-
-      const filePath = documento.Url;
-
+  
+      // Extraer la ruta relativa del archivo desde Url
+      const relativePath = documento.Url.replace(/^http:\/\/localhost:\d+\//, ''); // Elimina "http://localhost:3000/" o similar
+      const filePath = path.resolve(__dirname, '../..', relativePath); // Construye la ruta absoluta
+  
       // Intentar eliminar el archivo del sistema de archivos
       try {
-        await fs.unlink(filePath); // Usamos fs.promises.unlink para eliminar el archivo
+        await fs.access(filePath); // Verifica si el archivo existe
+        await fs.unlink(filePath); // Elimina el archivo
       } catch (err) {
-        console.error(`Error al eliminar el archivo: ${filePath}`, err);
-        // Si ocurre un error al eliminar el archivo, devolvemos un error pero seguimos con la eliminación en la base de datos
+        console.error(`Error al intentar eliminar el archivo: ${filePath}`, err.message);
+        // Continuar con la eliminación en la base de datos aunque el archivo no exista
       }
-
+  
       // Registrar el cambio en HistorialCambio antes de eliminar
       await HistorialCambio.create({
         Accion: 'Eliminación',
@@ -259,15 +262,15 @@ const registerDocumentController = {
         Administrador_idAdministrador: req.user.id,
         Beneficiario_idBeneficiario: documento.Beneficiario_idBeneficiario,
       });
-
+  
       // Eliminar el documento de la base de datos
       await Documento.destroy({
         where: { idDocumentos },
       });
-
+  
       res.status(200).json({ message: 'Documento eliminado exitosamente' });
     } catch (err) {
-      console.error('Error al eliminar el documento:', err);
+      console.error('Error al eliminar el documento:', err.message);
       res.status(500).json({ message: 'Error al eliminar el documento', error: err.message });
     }
   },

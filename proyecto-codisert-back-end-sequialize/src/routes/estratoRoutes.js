@@ -1,12 +1,12 @@
 const express = require('express');
-const authAdminMiddleware = require('../middleware/authAdminMiddleware');
+const authAdminRegisMiddleware = require('../middleware/authAdminRegisMiddleware');
 const estratoController = require('../controllers/estratoController');
 const router = express.Router();
 
-router.post('/register', authAdminMiddleware, estratoController.createEstrato); 
-router.put('/update/:id', authAdminMiddleware, estratoController.updateEstrato); 
-router.delete('/delete/:id', authAdminMiddleware, estratoController.deleteEstrato); 
-router.get('/search-alls', authAdminMiddleware, estratoController.getAllEstratos); 
-router.get('/search/:id', authAdminMiddleware, estratoController.getEstratoById); 
+router.post('/register', authAdminRegisMiddleware, estratoController.createEstrato); 
+router.put('/update/:id', authAdminRegisMiddleware, estratoController.updateEstrato); 
+router.delete('/delete/:id', authAdminRegisMiddleware, estratoController.deleteEstrato); 
+router.get('/search-alls', authAdminRegisMiddleware, estratoController.getAllEstratos); 
+router.get('/search/:id', authAdminRegisMiddleware, estratoController.getEstratoById); 
 
 module.exports = router;

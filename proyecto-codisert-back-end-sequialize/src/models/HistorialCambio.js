@@ -14,12 +14,12 @@ const HistorialCambio = sequelize.define('HistorialCambio', {
     allowNull: false,  // No puede ser nulo
   },
   ValorAnterior: {
-    type: DataTypes.STRING(700),
-    allowNull: false,  // No puede ser nulo
+    type: DataTypes.TEXT,  // Cambiado a tipo TEXT
+    allowNull: false,      // No puede ser nulo
   },
   ValorNuevo: {
-    type: DataTypes.STRING(700),
-    allowNull: true,  // Puede ser nulo
+    type: DataTypes.TEXT,  // Cambiado a tipo TEXT
+    allowNull: true,       // Puede ser nulo
   },
   Administrador_idAdministrador: {
     type: DataTypes.INTEGER,

@@ -1,12 +1,12 @@
 const express = require('express');
-const authAdminMiddleware = require('../middleware/authAdminMiddleware');
+const authAdminRegisMiddleware = require('../middleware/authAdminRegisMiddleware');
 const sexoController = require('../controllers/sexoController');
 const router = express.Router();
 
-router.post('/register', authAdminMiddleware, sexoController.createSexo);       
-router.put('/update/:id', authAdminMiddleware, sexoController.updateSexo);   
-router.delete('/delete/:id', authAdminMiddleware, sexoController.deleteSexo); 
-router.get('/search-alls', authAdminMiddleware, sexoController.getAllSexos);    
-router.get('/search/:id', authAdminMiddleware, sexoController.getSexoById);  
+router.post('/register', authAdminRegisMiddleware, sexoController.createSexo);       
+router.put('/update/:id', authAdminRegisMiddleware, sexoController.updateSexo);   
+router.delete('/delete/:id', authAdminRegisMiddleware, sexoController.deleteSexo); 
+router.get('/search-alls', authAdminRegisMiddleware, sexoController.getAllSexos);    
+router.get('/search/:id', authAdminRegisMiddleware, sexoController.getSexoById);  
 
 module.exports = router;

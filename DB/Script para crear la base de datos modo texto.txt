@@ -189,7 +189,7 @@ DROP TABLE IF EXISTS `proyecto_codisert`.`Documentos` ;
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Documentos` (
   `idDocumentos` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `NombreDocumento` VARCHAR(45) NOT NULL,
-  `TipoDocumento` VARCHAR(45) NOT NULL,
+  `TipoDocumento` VARCHAR(255) NOT NULL,
   `Url` VARCHAR(255) NOT NULL,
   `Beneficiario_idBeneficiario` INT UNSIGNED NOT NULL,
   `Administrador_idAdministrador` INT UNSIGNED NOT NULL,
@@ -217,107 +217,128 @@ DROP TABLE IF EXISTS `proyecto_codisert`.`HistorialCambio` ;
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`HistorialCambio` (
   `idHistorialCambio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Accion` VARCHAR(45) NOT NULL,
-  `ValorAnterior` VARCHAR(700) NOT NULL,
-  `ValorNuevo` VARCHAR(700) NULL,
+  `ValorAnterior` TEXT NOT NULL,
+  `ValorNuevo` TEXT NULL,
   `Administrador_idAdministrador` INT UNSIGNED NOT NULL,
   `Beneficiario_idBeneficiario` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`idHistorialCambio`))
 ENGINE = InnoDB;
 
-DROP TABLE IF EXISTS `proyecto_codisert`.`Via`;
+
+-- -----------------------------------------------------
+-- Table `proyecto_codisert`.`Via`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_codisert`.`Via` ;
 
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Via` (
   `idVia` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Via` VARCHAR(45) NOT NULL,
-  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idVia`)
-) ENGINE = InnoDB;
+  PRIMARY KEY (`idVia`))
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `proyecto_codisert`.`TipoUnidad`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_codisert`.`TipoUnidad`;
+DROP TABLE IF EXISTS `proyecto_codisert`.`TipoUnidad` ;
 
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`TipoUnidad` (
   `idTipoUnidad` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `TipoUnidad` VARCHAR(45) NOT NULL,
-  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idTipoUnidad`)
-) ENGINE = InnoDB;
+  PRIMARY KEY (`idTipoUnidad`))
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `proyecto_codisert`.`Barrio`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `proyecto_codisert`.`Barrio`;
+DROP TABLE IF EXISTS `proyecto_codisert`.`Barrio` ;
 
 CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Barrio` (
   `idBarrio` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Barrio` VARCHAR(45) NOT NULL,
-  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idBarrio`)
-) ENGINE = InnoDB;
+  PRIMARY KEY (`idBarrio`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `proyecto_codisert`.`Facturacion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `proyecto_codisert`.`Facturacion` ;
+
+CREATE TABLE IF NOT EXISTS `proyecto_codisert`.`Facturacion` (
+  `idFacturacion` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `NombreDocumento` VARCHAR(45) NOT NULL,
+  `Url` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idFacturacion`))
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-ALTER TABLE `proyecto_codisert`.`Estado`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla administrador
+ALTER TABLE `administrador`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a Estrato
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`Estrato`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla barrio
+ALTER TABLE `barrio`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a Rol
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`Rol`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla beneficiario
+ALTER TABLE `beneficiario`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a TipoDocumento
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`TipoDocumento`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla documentos
+ALTER TABLE `documentos`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a Administrador
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`Administrador`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla estado
+ALTER TABLE `estado`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a Beneficiario
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`Beneficiario`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla estrato
+ALTER TABLE `estrato`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a Documentos
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`Documentos`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla facturacion
+ALTER TABLE `facturacion`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
 
--- -----------------------------------------------------
--- Agregar campos createdAt y updatedAt a HistorialCambio
--- -----------------------------------------------------
-ALTER TABLE `proyecto_codisert`.`HistorialCambio`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
-  
-  ALTER TABLE `proyecto_codisert`.`Sexo`
-  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- Para la tabla historialcambio
+ALTER TABLE `historialcambio`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
+
+-- Para la tabla rol
+ALTER TABLE `rol`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
+
+-- Para la tabla sexo
+ALTER TABLE `sexo`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
+
+-- Para la tabla tipodocumento
+ALTER TABLE `tipodocumento`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
+
+-- Para la tabla tipounidad
+ALTER TABLE `tipounidad`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();
+
+-- Para la tabla via
+ALTER TABLE `via`
+  ADD COLUMN `createdAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  ADD COLUMN `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP();

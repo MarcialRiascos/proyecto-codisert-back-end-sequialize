@@ -1,12 +1,12 @@
 const express = require('express');
-const authAdminMiddleware = require('../middleware/authAdminMiddleware');
+const authAdminRegisMiddleware = require('../middleware/authAdminRegisMiddleware');
 const roleController = require('../controllers/roleController');
 const router = express.Router();
 
-router.post('/register', authAdminMiddleware, roleController.createRole);
-router.get('/search-alls', authAdminMiddleware, roleController.getAllRoles);
-router.get('/search/:id', authAdminMiddleware, roleController.getRoleById);
-router.put('/update/:id', authAdminMiddleware, roleController.updateRole);
-router.delete('/delete/:id', authAdminMiddleware, roleController.deleteRole);
+router.post('/register', authAdminRegisMiddleware, roleController.createRole);
+router.get('/search-alls', authAdminRegisMiddleware, roleController.getAllRoles);
+router.get('/search/:id', authAdminRegisMiddleware, roleController.getRoleById);
+router.put('/update/:id', authAdminRegisMiddleware, roleController.updateRole);
+router.delete('/delete/:id', authAdminRegisMiddleware, roleController.deleteRole);
 
 module.exports = router;

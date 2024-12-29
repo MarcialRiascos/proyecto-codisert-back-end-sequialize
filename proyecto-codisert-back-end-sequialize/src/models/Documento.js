@@ -14,7 +14,7 @@ const Documento = sequelize.define('Documento', {
     allowNull: false,
   },
   TipoDocumento: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.STRING(255),
     allowNull: false,
   },
   Url: {
@@ -39,11 +39,11 @@ const Documento = sequelize.define('Documento', {
   timestamps: true, // Si no usas campos de timestamps, ponlo como false
 });
 
-// Documento.belongsTo(Beneficiario, {
-//   foreignKey: 'Beneficiario_idBeneficiario',  // Clave foránea en Documento
-//   // targetKey: 'idBeneficiario',  // Clave primaria en Beneficiario
-//   // as: 'beneficiario',  // Alias para la relación
-// });
+Documento.belongsTo(Beneficiario, {
+  foreignKey: 'Beneficiario_idBeneficiario',  // Clave foránea en Documento
+   targetKey: 'idBeneficiario',  // Clave primaria en Beneficiario
+   as: 'beneficiario',  // Alias para la relación
+});
 
 Documento.belongsTo(Administrador, {
   foreignKey: 'Administrador_idAdministrador',  // Clave foránea en Documento

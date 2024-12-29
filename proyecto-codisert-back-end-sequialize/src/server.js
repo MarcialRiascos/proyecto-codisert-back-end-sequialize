@@ -15,6 +15,7 @@ const tipoDocumentoRoutes = require('./routes/tipoDocumentoRoutes');
 const viaRoutes = require('./routes/viaRoutes'); 
 const tipoUnidadRoutes = require('./routes/tipoUnidadRoutes'); 
 const barrioRoutes = require('./routes/barrioRoutes'); 
+const facturacionRoutes = require('./routes/facturacionRoutes'); 
 const morgan = require('morgan');
 const path = require('path');
 
@@ -45,6 +46,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 // Rutas
 app.use('/auth', authRoutes);
 app.use('/api/v1/document', documentRoutes); // Ruta para manejar la carga de documentos
+app.use('/api/v1/facturation', facturacionRoutes); 
 
 app.use('/api/v1/admin', registerAdminRoutes);
 app.use('/api/v1/beneficiary', registerBeneficiaryRoutes);
